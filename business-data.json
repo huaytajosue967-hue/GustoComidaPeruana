@@ -7,6 +7,7 @@
   "email": "",
   "whatsapp": "https://wa.link/amosx9",
   "horarios": "Lun-Sáb 12:00–23:00 hs · Dom 12:00–18:00 hs",
+  "horario_delivery": "Lun-Sáb 12:00–16:00 hs y 18:00–23:00 hs · Dom 12:00–16:00 hs",
   "fundado": 2019,
   "slogan": "Auténtico Sabor Peruano",
   "categorias_carta": [
@@ -45,10 +46,12 @@
   "tono": "Premium, cálido, auténtico. Sin precios en la web (decisión del cliente, igual que competencia tipo Tanta/Osaka Nikkei/La Mar).",
   "google_tag_manager": "GTM-P6ZRCQ5Z",
   "notas": [
-    "El sitio ya tiene Google Tag Manager instalado (GTM-P6ZRCQ5Z) en site/index.html — no tocar ni romper bajo ninguna circunstancia en futuros cambios. Sin eventos custom configurados todavía.",
-    "No se muestran precios en la carta del sitio ni en el PDF de la carta, por decisión explícita del cliente.",
-    "El hero usa un efecto de scroll-video (Machu Picchu) con site/assets/MachuPichuGustoVid.mp4, altura 280vh.",
+    "El sitio ya tiene Google Tag Manager instalado (GTM-P6ZRCQ5Z) en index.html (raíz del repo) — no tocar ni romper bajo ninguna circunstancia en futuros cambios. Sin eventos custom configurados todavía.",
+    "No se muestran precios en la carta del sitio ni en el PDF de la carta, por decisión explícita del cliente. La página de pedidos (pedidos.html) es la única excepción: ahí sí se muestran precios porque es una herramienta de compra real.",
+    "El hero usa un efecto de scroll-video (Machu Picchu) con assets/MachuPichuGustoVid.mp4, altura 280vh.",
     "Hubo un bug de especificidad CSS (.nav-links a pisaba el padding de .nav-cta) ya resuelto con el selector compuesto .nav-links a.nav-cta.",
-    "legacy/ contiene los archivos originales sin usar en el sitio actual (fotos sin retocar, capturas de reseñas usadas solo como referencia de texto, la carta vieja en PDF, y una copia antigua de index.html ya no editada)."
+    "legacy/ contiene los archivos originales sin usar en el sitio actual (fotos sin retocar, capturas de reseñas usadas solo como referencia de texto, la carta vieja en PDF, y una copia antigua de index.html ya no editada).",
+    "index.html, assets/ y legacy/ están en la raíz del repo (no en site/) desde que se resolvió el 403 de Hostinger — el hosting publica el repo tal cual, sin subcarpeta configurable.",
+    "pedidos.html (carrito de delivery) ya está enlazado desde index.html (nav, hero, sección de carta, galería) — dejó de estar en pruebas."
   ]
 }

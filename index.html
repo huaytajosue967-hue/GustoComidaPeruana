@@ -64,6 +64,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   ],
   "menu": "https://gustocomidaperuana.net/menu/carta.html",
   "acceptsReservations": "https://wa.link/amosx9",
+  "potentialAction": {
+    "@type": "OrderAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://gustocomidaperuana.net/pedidos.html",
+      "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"]
+    },
+    "deliveryMethod": "http://purl.org/goodrelations/v1#DeliveryModeOwnFleet"
+  },
   "sameAs": [
     "https://www.instagram.com/gustocomidaperuana/",
     "https://www.facebook.com/gustocomidaperuana"
@@ -150,7 +159,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .nav-links a:hover{color:var(--gold-bright);}
   .nav-links a:hover::after{width:100%;}
-  .nav-links a.nav-cta{
+  .nav-links a.nav-cta, .mobile-panel a.nav-cta{
     background:linear-gradient(135deg, var(--gold), var(--orange));
     color:var(--bg-deep) !important; padding:10px 22px; border-radius:30px;
     font-weight:700; font-size:0.88rem; white-space:nowrap;
@@ -159,6 +168,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .nav-cta:hover{transform:translateY(-2px); box-shadow:0 8px 22px rgba(216,170,53,0.45);}
   .nav-cta::after{display:none;}
+  .nav-links a.nav-cta-delivery, .mobile-panel a.nav-cta-delivery{
+    background:transparent; color:var(--gold-bright) !important;
+    border:1.5px solid var(--gold); box-shadow:none;
+  }
+  .nav-cta-delivery:hover{background:rgba(216,170,53,0.12); box-shadow:none;}
 
   .burger{display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; z-index:1100;}
   .burger span{width:26px; height:2px; background:var(--gold); transition:.3s;}
@@ -169,7 +183,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .mobile-panel.open{transform:translateY(0);}
   .mobile-panel a{font-family:var(--serif); font-size:1.6rem; color:var(--text-white);}
-  .mobile-panel a.nav-cta{color:var(--bg-deep) !important; font-size:1rem;}
+  .mobile-panel a.nav-cta{font-size:1rem;}
 
   /* ---------- HERO (scroll-driven video) ---------- */
   .scroll-video-hero{
@@ -331,7 +345,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .menu-note a{color:#25D366; font-weight:700; border-bottom:1px solid #25D366;}
 
-  .menu-cta{display:flex; justify-content:center; margin-top:28px;}
+  .menu-cta{display:flex; justify-content:center; flex-wrap:wrap; gap:18px; margin-top:28px;}
 
   /* ---------- GALLERY ---------- */
   .gallery{padding:130px 0;}
@@ -431,6 +445,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="#galeria">Galería</a>
         <a href="#resenas">Reseñas</a>
         <a href="#contacto">Contacto</a>
+        <a href="pedidos.html" class="nav-cta nav-cta-delivery">¡Pedí Delivery!</a>
         <a href="https://wa.link/amosx9" target="_blank" rel="noopener" class="nav-cta">Reservá</a>
       </div>
       <button class="burger" id="burger" aria-label="Abrir menú">
@@ -445,6 +460,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <a href="#galeria">Galería</a>
     <a href="#resenas">Reseñas</a>
     <a href="#contacto">Contacto</a>
+    <a href="pedidos.html" class="nav-cta nav-cta-delivery">¡Pedí Delivery!</a>
     <a href="https://wa.link/amosx9" target="_blank" rel="noopener" class="nav-cta">Reservá por WhatsApp</a>
   </div>
 
@@ -461,6 +477,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p class="hero-desc">Ceviches y mariscos frescos, cocinados con el cariño de siempre. Lo mejor del Perú en tu mesa.</p>
         <div class="hero-ctas">
           <a href="menu/carta.html" target="_blank" rel="noopener" class="btn btn-primary">Ver la Carta Completa</a>
+          <a href="pedidos.html" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            ¡Pedí Delivery!
+          </a>
           <a href="https://wa.link/amosx9" target="_blank" rel="noopener" class="btn btn-ghost">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.34c1.36.72 2.91 1.13 4.56 1.13h.01c5.46 0 9.91-4.45 9.91-9.91C21.9 6.45 17.5 2 12.04 2Zm5.78 14.02c-.24.68-1.4 1.3-1.93 1.36-.5.06-1.02.26-3.43-.72-2.9-1.18-4.77-4.12-4.92-4.31-.14-.19-1.17-1.56-1.17-2.98s.75-2.11 1.01-2.4c.26-.28.57-.35.76-.35h.55c.18 0 .42-.03.65.5.24.55.8 1.9.87 2.04.07.14.11.3.02.49-.09.19-.14.3-.28.46-.14.16-.29.36-.42.48-.14.14-.28.29-.12.57.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.6-.07.16-.19.7-.81.88-1.09.19-.28.37-.23.62-.14.26.09 1.6.76 1.88.89.28.14.46.21.53.32.07.12.07.68-.17 1.36Z"/></svg>
             Reservá por WhatsApp
@@ -576,6 +596,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p class="menu-note reveal">No cobramos cubiertos. Consultá disponibilidad y precios por <a href="https://wa.link/amosx9" target="_blank" rel="noopener">WhatsApp</a></p>
       <div class="menu-cta reveal">
         <a href="menu/carta.html" target="_blank" rel="noopener" class="btn btn-primary">Ver la Carta Completa</a>
+        <a href="pedidos.html" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          ¡Pedí Delivery!
+        </a>
       </div>
     </div>
   </section>
@@ -598,6 +622,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="gallery-item reveal scale"><img src="assets/PiscoSour.png" alt="Pisco Sour" loading="lazy" style="object-position:center 85%;"></div>
         <div class="gallery-item reveal scale"><img src="assets/MixturaDeMariscos.png" alt="Mixtura de Mariscos" loading="lazy"></div>
         <div class="gallery-item reveal scale"><img src="assets/InkaCola.png" alt="Inka Cola" loading="lazy"></div>
+      </div>
+      <div class="menu-cta reveal">
+        <a href="pedidos.html" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          ¡Pedí Delivery!
+        </a>
       </div>
     </div>
   </section>
@@ -665,6 +695,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           </div>
           <div><h4>Horario</h4><p>Lun a sáb: 12:00–23:00 · Dom: 12:00–18:00</p></div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <div><h4>Horario de Delivery</h4><p>Lun a sáb: 12:00–16:00 y 18:00–23:00 · Dom: 12:00–16:00</p></div>
         </div>
 
         <div class="contact-item">
