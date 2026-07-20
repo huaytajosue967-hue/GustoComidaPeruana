@@ -49,6 +49,6 @@
     "No se muestran precios en la carta del sitio ni en el PDF de la carta, por decisión explícita del cliente.",
     "El hero usa un efecto de scroll-video (Machu Picchu) con site/assets/MachuPichuGustoVid.mp4, altura 280vh.",
     "Hubo un bug de especificidad CSS (.nav-links a pisaba el padding de .nav-cta) ya resuelto con el selector compuesto .nav-links a.nav-cta.",
-    "Assets/ contiene los archivos originales sin usar en el sitio actual (fotos sin retocar, capturas de reseñas usadas solo como referencia de texto, la carta vieja en PDF, y una copia antigua de index.html ya no editada)."
+    "legacy/ contiene los archivos originales sin usar en el sitio actual (fotos sin retocar, capturas de reseñas usadas solo como referencia de texto, la carta vieja en PDF, y una copia antigua de index.html ya no editada)."
   ]
 }
