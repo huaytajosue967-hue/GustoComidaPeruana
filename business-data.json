@@ -1,0 +1,54 @@
+{
+  "nombre": "Gusto Comida Peruana",
+  "sector": "Restaurante peruano (especialidad ceviches y mariscos)",
+  "ciudad": "Barrio Chino, Belgrano, CABA, Argentina",
+  "direccion": "Olazábal 1679, Barrio Chino, Belgrano, CABA",
+  "telefono": "",
+  "email": "",
+  "whatsapp": "https://wa.link/amosx9",
+  "horarios": "Lun-Sáb 12:00–23:00 hs · Dom 12:00–18:00 hs",
+  "fundado": 2019,
+  "slogan": "Auténtico Sabor Peruano",
+  "categorias_carta": [
+    "Entradas y Piqueos",
+    "Ensaladas y Frituras",
+    "Platos Criollos",
+    "Ceviches",
+    "Pescados y Mariscos",
+    "Sopas",
+    "Postres y Cafetería",
+    "Bebidas",
+    "Menú Ejecutivo (Lun-Vie 12:00-15:30)",
+    "Happy Hours (Lun-Vie 16:00-21:00)"
+  ],
+  "redes": {
+    "instagram": "@gustocomidaperuana",
+    "facebook": "@gustocomidaperuana"
+  },
+  "testimonios": [
+    { "texto": "El servicio súper rápido y las camareras muy amables, nos atendieron súper bien. La comida riquísima! Comimos 3. Pedimos un ceviche gusto, estaba increíble y súper abundante. Unos tequeños y una salchipapa que sobraron casi enteras. La jarra de maracuyá deliciosa.", "autor": "Sofia Rattagan", "fecha": "Hace 4 meses", "fuente": "Google", "estrellas": 5 },
+    { "texto": "Excelente comida! Muy rica y abundante! Pedimos anticucho, tiradito y cebiche de salmón rosado, y de postre un tres leches. Todo fresco, buenos acompañamientos y ambiente muy tranquilo. Totalmente recomendado! :D", "autor": "Liza Chambi", "fecha": "Hace 7 meses", "fuente": "Google", "estrellas": 5 },
+    { "texto": "Increíble lugar! Viajamos a Perú con las delicias que comimos, la atención excelente hasta recomendación de platos y explicando que platos eran para compartir. Una experiencia riquísima!", "autor": "Agustina Nieto", "fecha": "Hace 10 meses", "fuente": "Google", "estrellas": 5 },
+    { "texto": "La comida es riquísima y los platos muy abundantes y para compartir. En particular a mi me encanta el ceviche y aca lo preparan riquísimo. Los precios son razonables y el local esta muy bien.", "autor": "Ezequiel Picarelli", "fecha": "Hace 5 meses", "fuente": "Google", "estrellas": 5 }
+  ],
+  "colores": {
+    "bg_primary": "#1D1D23",
+    "bg_deep": "#0D0705",
+    "bg_brown": "#2A1206",
+    "gold": "#D8AA35",
+    "gold_bright": "#ECAA00",
+    "gold_deep": "#B97810",
+    "orange": "#FA8C00",
+    "whatsapp_verde": "#25D366"
+  },
+  "tipografias": { "display": "Fraunces", "cuerpo": "Manrope" },
+  "tono": "Premium, cálido, auténtico. Sin precios en la web (decisión del cliente, igual que competencia tipo Tanta/Osaka Nikkei/La Mar).",
+  "google_tag_manager": "GTM-P6ZRCQ5Z",
+  "notas": [
+    "El sitio ya tiene Google Tag Manager instalado (GTM-P6ZRCQ5Z) en site/index.html — no tocar ni romper bajo ninguna circunstancia en futuros cambios. Sin eventos custom configurados todavía.",
+    "No se muestran precios en la carta del sitio ni en el PDF de la carta, por decisión explícita del cliente.",
+    "El hero usa un efecto de scroll-video (Machu Picchu) con site/assets/MachuPichuGustoVid.mp4, altura 280vh.",
+    "Hubo un bug de especificidad CSS (.nav-links a pisaba el padding de .nav-cta) ya resuelto con el selector compuesto .nav-links a.nav-cta.",
+    "Assets/ contiene los archivos originales sin usar en el sitio actual (fotos sin retocar, capturas de reseñas usadas solo como referencia de texto, la carta vieja en PDF, y una copia antigua de index.html ya no editada)."
+  ]
+}

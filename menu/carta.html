@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<title>Carta — Gusto Comida Peruana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D8AA35;
+    --gold-bright: #ECAA00;
+    --gold-deep: #B97810;
+    --bg-brown: #2A1206;
+    --bg-deep: #0D0705;
+    --ink: #2A1206;
+    --ink-soft: #6B4A30;
+    --paper: #FBF4E6;
+    --paper-alt: #F3E7CE;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Manrope', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--ink);
+  }
+
+  @page { size: A4; margin: 0; }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 16mm 18mm;
+    position: relative;
+    page-break-after: always;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .divider {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold-deep) 15%, var(--gold) 50%, var(--gold-deep) 85%, transparent);
+    margin: 6px 0 20px;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .page-header .cat-sub {
+    font-size: 9pt;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    font-weight: 700;
+  }
+  .page-header .cat-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 24pt;
+    color: var(--ink);
+  }
+  .page-header .mini-brand {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 700;
+    font-size: 15pt;
+    color: var(--gold-deep);
+  }
+
+  .item { margin-bottom: 13px; break-inside: avoid; }
+  .item .item-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 12.5pt;
+    color: var(--ink);
+    display: inline;
+  }
+  .item .tag {
+    display: inline-block;
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #3f7d3f;
+    background: #e3f0e3;
+    border-radius: 20px;
+    padding: 1px 8px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.03em;
+  }
+  .item .item-desc {
+    font-size: 10pt;
+    color: var(--ink-soft);
+    margin-top: 2px;
+    line-height: 1.45;
+  }
+
+  .cols-2 { columns: 2; column-gap: 34px; }
+  .cols-2 .item { break-inside: avoid; }
+
+  .section-label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 13pt;
+    color: var(--gold-deep);
+    margin: 16px 0 10px;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+
+  .page-footer {
+    position: absolute;
+    bottom: 12mm;
+    left: 18mm;
+    right: 18mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8pt;
+    color: var(--ink-soft);
+    border-top: 1px solid rgba(185,120,16,0.25);
+    padding-top: 8px;
+  }
+
+  .footnote {
+    text-align: center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 10pt;
+    color: var(--gold-deep);
+    margin-top: 14px;
+  }
+
+  /* ===== Portada ===== */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    background: linear-gradient(160deg, var(--bg-brown) 0%, var(--bg-deep) 100%);
+    color: #fff;
+  }
+  .cover .eyebrow {
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    font-size: 10pt;
+    color: var(--gold);
+    margin-bottom: 22px;
+  }
+  .cover h1 { font-family: var(--font-display); font-style: italic; font-size: 52pt; font-weight: 700; margin-bottom: 12px; }
+  .cover .slogan { font-family: var(--font-display); font-style: italic; font-size: 17pt; color: var(--gold-bright); margin-bottom: 40px; }
+  .cover .cover-divider { width: 160px; height: 2px; background: var(--gold); opacity: 0.7; margin: 0 auto 40px; }
+  .cover .cover-tags { font-size: 9.5pt; letter-spacing: 0.1em; color: rgba(255,255,255,0.75); text-transform: uppercase; }
+  .cover .cover-address { position: absolute; bottom: 20mm; font-size: 9.5pt; color: rgba(255,255,255,0.6); }
+
+  /* ===== Feature box (historia / notas) ===== */
+  .feature-box {
+    background: var(--bg-brown);
+    color: #fff;
+    border-radius: 10px;
+    padding: 18px 24px;
+    margin-top: 18px;
+  }
+  .feature-box h3 { font-family: var(--font-display); font-size: 13pt; margin-bottom: 8px; color: var(--gold-bright); }
+  .feature-box p { font-size: 9.5pt; line-height: 1.6; color: rgba(255,255,255,0.88); }
+
+  .note-line {
+    text-align: center;
+    font-size: 9.5pt;
+    font-style: italic;
+    color: var(--gold-deep);
+    margin-top: 12px;
+  }
+
+  .simple-list { list-style: none; }
+  .simple-list li {
+    font-size: 9.5pt;
+    color: var(--ink);
+    padding: 4px 0;
+    border-bottom: 1px dotted rgba(185,120,16,0.3);
+  }
+  .simple-list li:last-child { border-bottom: none; }
+
+  /* ===== Contraportada ===== */
+  .backcover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    background: var(--paper);
+  }
+  .backcover h2 { font-family: var(--font-display); font-style: italic; font-size: 24pt; color: var(--ink); margin-bottom: 30px; }
+  .backcover .info-line { font-size: 11pt; color: var(--ink); margin-bottom: 10px; }
+  .backcover .info-line strong { color: var(--gold-deep); }
+  .backcover .cover-divider { width: 140px; height: 2px; background: var(--gold-deep); opacity: 0.6; margin: 26px auto; }
+  .backcover .slogan { font-family: var(--font-display); font-style: italic; color: var(--gold-deep); font-size: 13pt; }
+
+  /* ===== Vista en navegador (no afecta impresión/PDF) ===== */
+  @media screen {
+    body {
+      background: var(--bg-deep);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 36px;
+      padding: 48px 16px;
+      min-height: 100vh;
+    }
+    .page {
+      width: min(210mm, 100%);
+      max-width: 800px;
+      height: auto;
+      overflow: visible;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .cover, .backcover { min-height: 640px; }
+    .page-footer { position: static; margin-top: 24px; }
+    .cover .cover-address { position: static; margin-top: 32px; }
+  }
+
+  @media screen and (max-width: 700px) {
+    .page { padding: 28px 20px; border-radius: 0; }
+    .cols-2 { columns: 1; }
+    .page-header .cat-title { font-size: 19pt; }
+    .cover h1 { font-size: 34pt; }
+    .cover .slogan { font-size: 14pt; }
+    .feature-box { padding: 16px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<section class="page cover">
+  <span class="eyebrow">Barrio Chino · Belgrano · CABA</span>
+  <h1>Gusto</h1>
+  <p class="slogan">Auténtico Sabor Peruano</p>
+  <div class="cover-divider"></div>
+  <p class="cover-tags">Ceviches &nbsp;·&nbsp; Mariscos &nbsp;·&nbsp; Cocina Peruana</p>
+  <p class="cover-address">Olazábal 1679, Barrio Chino, Belgrano, CABA</p>
+</section>
+
+<!-- ENTRADAS Y PIQUEOS -->
+<section class="page">
+  <div class="page-header">
+    <div>
+      <div class="cat-sub">Gusto</div>
+      <div class="cat-title">Entradas &amp; Piqueos</div>
+    </div>
+    <div class="mini-brand">Gusto</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="cols-2">
+    <div class="item">
+      <span class="item-name">Causa Gusto</span>
+      <p class="item-desc">Puré de papa rellena con tártar de camarones, langostinos apanados fritos y mayonesa de la casa.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Causa de Camarones</span>
+      <p class="item-desc">Preparada con puré de papa, tártar de camarones y ají amarillo, clásico peruano.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Anticucho &amp; Huancaína</span>
+      <p class="item-desc">La pareja perfecta: pinches de anticucho con papas a la huancaína.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Papas a la Huancaína</span><span class="tag">Vegetariano</span>
+      <p class="item-desc">Papas bañadas en suave crema de queso y ají amarillo.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Tamales</span>
+      <p class="item-desc">Maíz molido condimentado con variedad de ajíes, rellenos de pollo o cerdo.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Piqueo Criollo</span>
+      <p class="item-desc">Tamal con salsa criolla, causita, papa a la huancaína y anticuchos.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Anticuchos de Langostinos</span>
+      <p class="item-desc">Brochetas grilladas a las brasas, adobadas en ajíes y crema de langosta, con papitas doradas.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Anticuchos de Corazón</span>
+      <p class="item-desc">Brochetas de corazón condimentadas con ajíes típicos, cocidas a las brasas, con papa dorada y salsa de rocoto.</p>
+    </div>
+  </div>
+
+  <div class="feature-box">
+    <h3>Nuestra historia</h3>
+    <p>Gusto abrió sus puertas en 2019 en pleno Barrio Chino de Belgrano, con una idea simple: llevar el auténtico sabor peruano a cada mesa. Cada plato se prepara al momento, con productos frescos de mercado.</p>
+  </div>
+
+  <div class="page-footer"><span>Gusto — Auténtico Sabor Peruano</span><span>Entradas &amp; Piqueos</span></div>
+</section>
+
+<!-- ENSALADAS Y FRITURAS -->
+<section class="page">
+  <div class="page-header">
+    <div>
+      <div class="cat-sub">Gusto</div>
+      <div class="cat-title">Ensaladas &amp; Frituras</div>
+    </div>
+    <div class="mini-brand">Gusto</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="cols-2">
+    <div class="item">
+      <span class="item-name">Chicharrón de Pollo</span>
+      <p class="item-desc">Medio pollo en trocitos, apanado y frito, con ensalada y papas fritas.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Chicharrón de Cerdo</span>
+      <p class="item-desc">Trozos de cerdo fritos acompañados con papas doradas y ensalada criolla.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Cuarto de Pollo Broaster</span>
+      <p class="item-desc">Crocante, con papas fritas, ensalada y arroz.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Salchipapas</span>
+      <p class="item-desc">Salchichas y papas fritas con ensalada y huevo.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ensalada Simple</span><span class="tag">Vegetariano</span>
+      <p class="item-desc">Lechuga, tomate y zanahoria.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ensalada Gusto</span><span class="tag">Vegetariano</span>
+      <p class="item-desc">Tomate, lechuga, zanahoria, cebolla y huevo o palta.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Tequeños</span><span class="tag">Vegetariano</span>
+      <p class="item-desc">Bocaditos fritos rellenos de queso, con salsita especial de la casa (6 u.).</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Porción de Arroz / Papas Fritas</span><span class="tag">Vegetariano</span>
+      <p class="item-desc">Guarniciones para acompañar cualquier plato.</p>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Gusto — Auténtico Sabor Peruano</span><span>Ensaladas &amp; Frituras</span></div>
+</section>
+
+<!-- PLATOS CRIOLLOS -->
+<section class="page">
+  <div class="page-header">
+    <div>
+      <div class="cat-sub">Gusto</div>
+      <div class="cat-title">Platos Criollos</div>
+    </div>
+    <div class="mini-brand">Gusto</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="cols-2">
+    <div class="item">
+      <span class="item-name">Lomo Gusto</span>
+      <p class="item-desc">Clásico especial: lomo y pollo salteados con tomate, cebolla y salsa de soja, con papas fritas, arroz y huevo frito.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Lomo Salteado</span>
+      <p class="item-desc">Trocitos de lomo o pollo salteados al wok con cebolla y tomate, con arroz y papas fritas.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Chaufa de Pollo o Carne</span>
+      <p class="item-desc">Arroz salteado con verduras, huevo y salsa de soja.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Chaufa Mixto</span>
+      <p class="item-desc">Salteado con pollo, carne, verduras y salsa de soja.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Chaufa Vegetariano</span><span class="tag">Vegetariano</span>
+      <p class="item-desc">Arroz salteado con verduras, huevo y salsa de soja.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ají de Gallina</span>
+      <p class="item-desc">Pechuga de gallina desmenuzada bañada en crema de ají amarillo, con papas, arroz blanco, huevo y aceituna.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Pollo a la Plancha</span>
+      <p class="item-desc">Pechuga de pollo a la plancha, con papa hervida y ensalada con huevo frito.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Tallarines Verdes con Bistec o Pollo</span>
+      <p class="item-desc">Bañados en salsa verde a base de albahaca y espinaca, con salsita huancaína.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Tallarines Salteados de Pollo o Carne</span>
+      <p class="item-desc">Salteados con cebolla, tomate y salsa de soja.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Tallarines Mixtos</span>
+      <p class="item-desc">Salteados con pollo, carne, verduras y salsa de soja.</p>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Gusto — Auténtico Sabor Peruano</span><span>Platos Criollos</span></div>
+</section>
+
+<!-- CEVICHES -->
+<section class="page">
+  <div class="page-header">
+    <div>
+      <div class="cat-sub">Gusto</div>
+      <div class="cat-title">Ceviches</div>
+    </div>
+    <div class="mini-brand">Gusto</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="cols-2">
+    <div class="item">
+      <span class="item-name">Ceviche de Pescado</span>
+      <p class="item-desc">Clásico peruano: filetes de pescado bañados en jugo de limón, con batata y cancha.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ceviche Gusto</span>
+      <p class="item-desc">El especial de la casa, con camarones y pescado marinado en leche de tigre, con batata.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ceviche de Salmón Rosado</span>
+      <p class="item-desc">Clásico peruano, pero con más sabor.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ceviche Gusto con Salmón Rosado</span>
+      <p class="item-desc">El especial de la casa, recargado.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ceviche Mixto</span>
+      <p class="item-desc">Mariscos y pescado bañados en jugo de limón, con batata, choclo y cancha.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ceviche Mixtura</span>
+      <p class="item-desc">Mixtura de mariscos y pescados, acompañada de rabas.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ceviche Nikkei</span>
+      <p class="item-desc">Fusión de cocina japonesa y peruana: salsa de soja, limón y semillas de sésamo.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ceviche Afrodisíaco</span>
+      <p class="item-desc">Frutos de mar condimentados con especias, vino blanco y limón.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Tiradito Criollo</span>
+      <p class="item-desc">Pesca del día en salsa de ají amarillo.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Degustación de Ceviches</span>
+      <p class="item-desc">Para 2. ¡Buenazo! Ceviche de pescado, ceviche mixtura con rabas fritas y ceviche Gusto.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Causa Acevichada con Rabas</span>
+      <p class="item-desc">Causita bañada con suave crema de rocoto, con ceviche de lenguado y rabas fritas.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Causa Acevichada de Salmón Rosado</span>
+      <p class="item-desc">Causita de tártar de camarones bañada con leche de tigre, con ceviche de salmón rosado y rabas fritas.</p>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Gusto — Auténtico Sabor Peruano</span><span>Ceviches</span></div>
+</section>
+
+<!-- PESCADOS Y MARISCOS -->
+<section class="page">
+  <div class="page-header">
+    <div>
+      <div class="cat-sub">Gusto</div>
+      <div class="cat-title">Pescados &amp; Mariscos</div>
+    </div>
+    <div class="mini-brand">Gusto</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="cols-2">
+    <div class="item">
+      <span class="item-name">Mixtura de Mariscos</span>
+      <p class="item-desc">Para 2. Degustación de causita, causa de langostinos, ceviche y arroz con mariscos.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Parrilla de Mariscos</span>
+      <p class="item-desc">Para 2. Abundantes mariscos a la plancha, bañados en suave crema de langosta, con papas doradas.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Ají de Camarones</span>
+      <p class="item-desc">Camarones dorados en manteca con crema de langostinos, con papas hervidas y arroz.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Chaufa de Mariscos</span>
+      <p class="item-desc">Salteados al wok con arroz, verdeo, brotes, salsa de soja y gotas de sésamo.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Tallarines Salteados con Mariscos</span>
+      <p class="item-desc">Con cebolla, morrón, manteca y salsa de ostión.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Jalea Mixta</span>
+      <p class="item-desc">Para 2. Pescados y mariscos apanados y fritos, con criolla, papitas y tártara.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Orgía de Mariscos</span>
+      <p class="item-desc">Exóticos frutos de mar condimentados con especias y ajíes, con papas naturales y arroz blanco.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Mero a la Macho</span>
+      <p class="item-desc">Filete de pescado bañado en salsa cremosa de mariscos y ajíes, con arroz y papas.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Salmón Rosado con Picante de Mariscos</span>
+      <p class="item-desc">Bañado en suave crema de mariscos, con arroz y papas.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Causa con Orgía de Mariscos</span>
+      <p class="item-desc">Causita de langostinos bañada con mixtura de mariscos.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Arroz con Mariscos</span>
+      <p class="item-desc">A base de arroz con mixtura de mariscos, aderezado con ajíes y vino blanco.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Salmón Rosado a la Plancha</span>
+      <p class="item-desc">Con verduras salteadas y crema de mariscos (opcional lenguado frito).</p>
+    </div>
+  </div>
+
+  <p class="note-line">No cobramos cubiertos.</p>
+
+  <div class="page-footer"><span>Gusto — Auténtico Sabor Peruano</span><span>Pescados &amp; Mariscos</span></div>
+</section>
+
+<!-- SOPAS Y POSTRES -->
+<section class="page">
+  <div class="page-header">
+    <div>
+      <div class="cat-sub">Gusto</div>
+      <div class="cat-title">Sopas &amp; Postres</div>
+    </div>
+    <div class="mini-brand">Gusto</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="section-label">Sopas</div>
+  <div class="cols-2">
+    <div class="item">
+      <span class="item-name">Sopa Criolla</span>
+      <p class="item-desc">Sopa casera a base de carne de res y fideos.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Sopa a la Minuta</span>
+      <p class="item-desc">A base de carne o pollo, con leche y huevo.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Parihuela</span>
+      <p class="item-desc">Sopa de pescado y mariscos, energizante y tonificante, típica de la costa.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Chupe de Camarones</span>
+      <p class="item-desc">Sopa típica peruana a base de camarones, queso, leche, huacatay y huevo.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Chupe de Pescado</span>
+      <p class="item-desc">Sopa peruana a base de pescado, queso, leche, huacatay y huevo.</p>
+    </div>
+    <div class="item">
+      <span class="item-name">Sudado de Pescado</span>
+      <p class="item-desc">Pescado al vapor cocido en su jugo, con tomates, cebollas y ajíes, con papas y arroz.</p>
+    </div>
+  </div>
+
+  <div class="section-label">Postres &amp; Cafetería</div>
+  <div class="cols-2">
+    <div class="item"><span class="item-name">Mousse de Maracuyá</span></div>
+    <div class="item"><span class="item-name">Mousse de Pisco Sour</span></div>
+    <div class="item"><span class="item-name">Torta Tres Leches</span></div>
+    <div class="item"><span class="item-name">Suspiro Limeño</span></div>
+    <div class="item"><span class="item-name">Café Exprés o Cortado</span></div>
+    <div class="item"><span class="item-name">Jarrito</span></div>
+    <div class="item"><span class="item-name">Té</span></div>
+  </div>
+
+  <div class="page-footer"><span>Gusto — Auténtico Sabor Peruano</span><span>Sopas &amp; Postres</span></div>
+</section>
+
+<!-- BEBIDAS -->
+<section class="page">
+  <div class="page-header">
+    <div>
+      <div class="cat-sub">Gusto</div>
+      <div class="cat-title">Bebidas</div>
+    </div>
+    <div class="mini-brand">Gusto</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="section-label">Sin Alcohol</div>
+  <div class="cols-2">
+    <ul class="simple-list">
+      <li>Agua (500 ml)</li>
+      <li>Gaseosa (350 ml)</li>
+      <li>Agua Saborizada (500 ml)</li>
+      <li>Chicha Morada</li>
+    </ul>
+  </div>
+
+  <div class="section-label">Con Alcohol</div>
+  <div class="cols-2">
+    <ul class="simple-list">
+      <li>Corona / Stella (porrón)</li>
+      <li>Cusqueña</li>
+      <li>Patagonia / Corona (750 ml)</li>
+      <li>Stella (1 L)</li>
+      <li>Quilmes (1 L)</li>
+    </ul>
+  </div>
+
+  <div class="section-label">Aperitivos</div>
+  <div class="cols-2">
+    <ul class="simple-list">
+      <li>Pisco Sour Tradicional</li>
+      <li>Pisco Sour Maracuyá</li>
+    </ul>
+  </div>
+
+  <div class="section-label">Bebidas Tradicionales</div>
+  <div class="cols-2">
+    <ul class="simple-list">
+      <li>Cremolada (jarra 1 L)</li>
+      <li>Licuado de Menta y Jengibre (1 L)</li>
+      <li>Licuado de Jugo de Maracuyá (1 L)</li>
+      <li>Chicha Morada (1 L)</li>
+      <li>Cremolada o Chicha Morada (vaso)</li>
+    </ul>
+  </div>
+
+  <div class="page-footer"><span>Gusto — Auténtico Sabor Peruano</span><span>Bebidas</span></div>
+</section>
+
+<!-- MENU EJECUTIVO -->
+<section class="page">
+  <div class="page-header">
+    <div>
+      <div class="cat-sub">Gusto</div>
+      <div class="cat-title">Menú Ejecutivo</div>
+    </div>
+    <div class="mini-brand">Gusto</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="feature-box">
+    <h3>Menú Ejecutivo</h3>
+    <p>Incluye plato principal + bebida. Podés cambiar tu bebida por una copa de vino con un pequeño adicional.<br>
+    Lunes a viernes de 12:00 a 15:30 hs. Los menús son individuales.</p>
+  </div>
+
+  <div class="feature-box" style="margin-top:22px;">
+    <h3>Happy Hours</h3>
+    <p>Lunes a viernes de 16:00 a 21:00 hs.</p>
+  </div>
+
+  <div class="page-footer"><span>Gusto — Auténtico Sabor Peruano</span><span>Menú Ejecutivo &amp; Happy Hours</span></div>
+</section>
+
+<!-- CONTRAPORTADA -->
+<section class="page backcover">
+  <h2>Gracias por elegirnos</h2>
+  <p class="info-line"><strong>Dirección:</strong> Olazábal 1679, Barrio Chino, Belgrano, CABA</p>
+  <p class="info-line"><strong>Horarios:</strong> Lun–Sáb 12:00–23:00 hs · Dom 12:00–18:00 hs</p>
+  <p class="info-line"><strong>Instagram / Facebook:</strong> @gustocomidaperuana</p>
+  <div class="cover-divider"></div>
+  <p class="slogan">Auténtico Sabor Peruano</p>
+</section>
+
+</body>
+</html>
