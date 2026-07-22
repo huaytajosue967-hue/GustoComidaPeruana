@@ -262,9 +262,34 @@
     .cover .slogan { font-size: 14pt; }
     .feature-box { padding: 16px 18px; }
   }
+
+  .back-to-site {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 50;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(13,7,5,0.85);
+    color: var(--gold);
+    border: 1px solid rgba(216,170,53,0.35);
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    backdrop-filter: blur(6px);
+    transition: background .2s ease, color .2s ease;
+  }
+  .back-to-site:hover { background: var(--gold); color: var(--bg-deep); }
+  @media print { .back-to-site { display: none; } }
 </style>
 </head>
 <body>
+
+<a href="../index.html" class="back-to-site">&larr; Volver al sitio</a>
 
 <!-- PORTADA -->
 <section class="page cover">
@@ -694,7 +719,7 @@
 
   <div class="feature-box" style="margin-top:22px;">
     <h3>Happy Hours</h3>
-    <p>Lunes a viernes de 16:00 a 21:00 hs.</p>
+    <p>2x1 en Pisco Sour, de lunes a viernes de 16:00 a 21:00 hs.</p>
   </div>
 
   <div class="page-footer"><span>Gusto — Auténtico Sabor Peruano</span><span>Menú Ejecutivo &amp; Happy Hours</span></div>
