@@ -45,7 +45,6 @@
     --text-muted: #B8AFA4;
     --border: rgba(216,170,53,0.22);
     --whatsapp: #25D366;
-    --mp-blue: #00AEEF;
     --font-display: 'Fraunces', serif;
     --font-body: 'Manrope', sans-serif;
     --radius: 14px;
@@ -394,45 +393,6 @@
   .country-list li .dial { color: var(--text-muted); font-size: 0.78rem; }
   .country-list .no-results { padding: 14px; color: var(--text-muted); font-size: 0.85rem; text-align: center; cursor: default; }
 
-  /* Payment methods */
-  .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
-  .payment-card { position: relative; display: block; cursor: pointer; }
-  .payment-card input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  .payment-card-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 8px;
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 12px;
-    background: var(--surface);
-    transition: border-color 0.2s, background 0.2s;
-    height: 100%;
-  }
-  .payment-card input:checked + .payment-card-inner {
-    border-color: var(--gold);
-    background: rgba(216,170,53,0.1);
-  }
-  .payment-card-inner .pay-icon { color: var(--gold-bright); }
-  .payment-card-inner .pay-icon.mp { color: var(--mp-blue); }
-  .payment-card-inner span.label { font-size: 0.88rem; font-weight: 700; color: var(--text-light); }
-  .payment-card-inner span.sub { font-size: 0.72rem; color: var(--text-muted); }
-
-  .cash-amount { display: none; margin-top: 16px; }
-  .cash-amount.visible { display: block; }
-  .change-hint { font-size: 0.85rem; font-weight: 600; margin-top: 8px; }
-  .change-hint.ok { color: #8fd98f; }
-  .change-hint.warn { color: var(--orange); }
-
-  .mp-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--mp-blue); color: #fff;
-    font-weight: 700; font-size: 0.78rem;
-    border-radius: 8px; padding: 5px 10px;
-  }
-
   .whatsapp-cta {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -452,7 +412,6 @@
 
   @media (max-width: 640px) {
     .field-row { grid-template-columns: 1fr; }
-    .payment-grid { grid-template-columns: 1fr; }
     .cart-bar { padding: 12px 16px; }
     .page-title { font-size: 1.5rem; }
   }
@@ -470,7 +429,7 @@
 <div class="stepper" id="stepper">
   <span class="step-dot" data-step="menu">1. Menú</span>
   <span class="step-dot" data-step="summary">2. Resumen</span>
-  <span class="step-dot" data-step="delivery">3. Entrega y Pago</span>
+  <span class="step-dot" data-step="delivery">3. Entrega</span>
 </div>
 
 <main>
@@ -478,7 +437,7 @@
   <!-- STEP: MENU -->
   <section class="step active" id="step-menu">
     <h1 class="page-title">Elegí tus platos</h1>
-    <p class="page-sub">Sumá lo que quieras con el botón "+". Podés dejar tus indicaciones al final.</p>
+    <p class="page-sub">Sumá lo que quieras con el botón "+". Al final armamos un mensaje con todo tu pedido para que lo envíes por WhatsApp y coordinemos ahí la entrega. Podés dejar tus indicaciones antes de enviarlo.</p>
 
     <div class="notice">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
@@ -510,7 +469,7 @@
 
   <!-- STEP: DELIVERY + PAYMENT -->
   <section class="step" id="step-delivery">
-    <h1 class="page-title">Entrega y pago</h1>
+    <h1 class="page-title">Datos de entrega</h1>
 
     <form id="delivery-form" novalidate>
       <fieldset>
@@ -579,44 +538,6 @@
             <label for="f-timbre">Timbre (si aplica)</label>
             <input type="text" id="f-timbre" name="timbre">
           </div>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Medio de pago</legend>
-        <div class="payment-grid">
-          <label class="payment-card">
-            <input type="radio" name="metodoPago" value="efectivo" id="pago-efectivo" required>
-            <span class="payment-card-inner">
-              <svg class="pay-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 6v.01M18 18v-.01"/></svg>
-              <span class="label">Efectivo</span>
-              <span class="sub">Pagás al recibir</span>
-            </span>
-          </label>
-          <label class="payment-card">
-            <input type="radio" name="metodoPago" value="transferencia" id="pago-transferencia" required>
-            <span class="payment-card-inner">
-              <span class="mp-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z"/><path d="M12 6a1.2 1.2 0 1 0 1.2 1.2A1.2 1.2 0 0 0 12 6Zm1.4 12h-2.8v-8h2.8Z"/></svg>
-                Mercado Pago
-              </span>
-              <span class="label">Transferencia</span>
-              <span class="sub">Billetera virtual</span>
-            </span>
-          </label>
-        </div>
-
-        <div class="cash-amount" id="cash-amount-box">
-          <div class="field">
-            <label for="f-monto">¿Con cuánto pagás?</label>
-            <input type="number" id="f-monto" name="monto" min="0" step="500" inputmode="numeric" placeholder="Ej: 50000">
-          </div>
-          <p class="change-hint" id="change-hint"></p>
-        </div>
-
-        <div class="notice" id="transfer-notice" style="display:none; margin-top:14px;">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-          <div>Coordinamos el pago por transferencia o Mercado Pago al confirmar tu pedido por WhatsApp.</div>
         </div>
       </fieldset>
 
@@ -775,8 +696,7 @@
     cart: {},
     specialInstructions: '',
     distance: null,
-    customer: { nombre: '', telefono: '', direccion: '', entrecalles: '', timbre: '' },
-    pago: { metodo: null, monto: null }
+    customer: { nombre: '', telefono: '', direccion: '', entrecalles: '', timbre: '' }
   };
 
   const STEP_ORDER = ['menu', 'summary', 'delivery'];
@@ -995,14 +915,10 @@
     state.specialInstructions = '';
     state.distance = null;
     state.customer = { nombre: '', telefono: '', direccion: '', entrecalles: '', timbre: '' };
-    state.pago = { metodo: null, monto: null };
     document.querySelectorAll('#menu-container .qty-value').forEach(el => el.textContent = '0');
     document.querySelectorAll('#menu-container .qty-btn.minus').forEach(el => el.disabled = true);
     document.getElementById('special-instructions').value = '';
     document.getElementById('delivery-form').reset();
-    document.getElementById('cash-amount-box').classList.remove('visible');
-    document.getElementById('transfer-notice').style.display = 'none';
-    document.getElementById('change-hint').textContent = '';
     selectCountry(COUNTRIES[0]);
     goToStep('menu');
   });
@@ -1047,7 +963,6 @@
     radio.addEventListener('change', () => {
       state.distance = radio.value;
       renderDeliverySummary();
-      updateChangeHint();
     });
   });
 
@@ -1056,41 +971,6 @@
       state.customer[field] = e.target.value;
     });
   });
-
-  // ---------- Payment method ----------
-  const cashBox = document.getElementById('cash-amount-box');
-  const transferNotice = document.getElementById('transfer-notice');
-  const montoInput = document.getElementById('f-monto');
-
-  deliveryForm.querySelectorAll('input[name="metodoPago"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-      state.pago.metodo = radio.value;
-      const isEfectivo = radio.value === 'efectivo';
-      cashBox.classList.toggle('visible', isEfectivo);
-      montoInput.required = isEfectivo;
-      transferNotice.style.display = isEfectivo ? 'none' : 'flex';
-      if (!isEfectivo) { montoInput.value = ''; state.pago.monto = null; }
-      updateChangeHint();
-    });
-  });
-
-  montoInput.addEventListener('input', () => {
-    state.pago.monto = montoInput.value ? Number(montoInput.value) : null;
-    updateChangeHint();
-  });
-
-  function updateChangeHint() {
-    const hint = document.getElementById('change-hint');
-    if (state.pago.metodo !== 'efectivo' || !state.pago.monto) { hint.textContent = ''; hint.className = 'change-hint'; return; }
-    const vuelto = state.pago.monto - grandTotal();
-    if (vuelto < 0) {
-      hint.textContent = `Ese monto no alcanza a cubrir el total (${formatPrice(grandTotal())}).`;
-      hint.className = 'change-hint warn';
-    } else {
-      hint.textContent = `Tu vuelto: ${formatPrice(vuelto)}`;
-      hint.className = 'change-hint ok';
-    }
-  }
 
   // ---------- Phone field: country picker + digits-only + per-country validation ----------
   const phoneInput = document.getElementById('f-telefono');
@@ -1226,12 +1106,6 @@
     lines.push(`Subtotal: ${formatPrice(cartTotal())}`);
     lines.push(`Envío (${DELIVERY_LABELS[state.distance] || '—'}): ${state.distance === 'near' ? 'GRATIS' : formatPrice(deliveryCost())}`);
     lines.push(`Total: ${formatPrice(grandTotal())}`);
-    lines.push('');
-    if (state.pago.metodo === 'efectivo') {
-      lines.push(`Medio de pago: Efectivo (paga con ${formatPrice(state.pago.monto || 0)}, vuelto ${formatPrice((state.pago.monto || 0) - grandTotal())})`);
-    } else if (state.pago.metodo === 'transferencia') {
-      lines.push('Medio de pago: Transferencia / Mercado Pago (a coordinar)');
-    }
     lines.push('');
     lines.push(`Nombre: ${state.customer.nombre}`);
     lines.push(`Teléfono: ${state.customer.telefono}`);
