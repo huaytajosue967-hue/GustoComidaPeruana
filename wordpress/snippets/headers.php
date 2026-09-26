@@ -86,9 +86,9 @@ add_shortcode('gusto_header_full', function() {
       <div class="wrap">
         <a href="<?php echo esc_url( home_url('/') ); ?>" class="logo">Gusto<span>Comida Peruana</span></a>
         <div class="nav-links">
-          <a href="#nosotros">Nosotros</a>
-          <a href="#carta">Carta</a>
           <a href="#galeria">Galería</a>
+          <a href="#carta">Carta</a>
+          <a href="#nosotros">Nosotros</a>
           <a href="#resenas">Reseñas</a>
           <a href="#contacto">Contacto</a>
           <a href="<?php echo esc_url( home_url('/pedidos/') ); ?>" class="nav-cta nav-cta-delivery">¡Pedí Delivery!</a>
@@ -99,9 +99,9 @@ add_shortcode('gusto_header_full', function() {
     </nav>
 
     <div class="mobile-panel" id="mobilePanel">
-      <a href="#nosotros">Nosotros</a>
-      <a href="#carta">Carta</a>
       <a href="#galeria">Galería</a>
+      <a href="#carta">Carta</a>
+      <a href="#nosotros">Nosotros</a>
       <a href="#resenas">Reseñas</a>
       <a href="#contacto">Contacto</a>
       <a href="<?php echo esc_url( home_url('/pedidos/') ); ?>" class="nav-cta nav-cta-delivery">¡Pedí Delivery!</a>
