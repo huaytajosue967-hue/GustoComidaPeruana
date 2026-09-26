@@ -1,0 +1,299 @@
+{
+    "exportFormatVersion": 2,
+    "exportTime": "2026-08-08 20:42:47",
+    "containerVersion": {
+        "path": "accounts/6365235955/containers/257874818/versions/3",
+        "accountId": "6365235955",
+        "containerId": "257874818",
+        "containerVersionId": "3",
+        "container": {
+            "path": "accounts/6365235955/containers/257874818",
+            "accountId": "6365235955",
+            "containerId": "257874818",
+            "name": "www.gustocomidaperuana.net",
+            "publicId": "GTM-P6ZRCQ5Z",
+            "usageContext": [
+                "WEB"
+            ],
+            "fingerprint": "1783620131488",
+            "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/6365235955/containers/257874818/workspaces?apiLink=container",
+            "features": {
+                "supportUserPermissions": true,
+                "supportEnvironments": true,
+                "supportWorkspaces": true,
+                "supportGtagConfigs": false,
+                "supportBuiltInVariables": true,
+                "supportClients": false,
+                "supportFolders": true,
+                "supportTags": true,
+                "supportTemplates": true,
+                "supportTriggers": true,
+                "supportVariables": true,
+                "supportVersions": true,
+                "supportZones": true,
+                "supportTransformations": false
+            },
+            "tagIds": [
+                "GTM-P6ZRCQ5Z"
+            ]
+        },
+        "tag": [
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "tagId": "4",
+                "name": "Google Ads - Etiqueta de Google",
+                "type": "googtag",
+                "parameter": [
+                    {
+                        "type": "TEMPLATE",
+                        "key": "tagId",
+                        "value": "AW-18311599565"
+                    }
+                ],
+                "fingerprint": "1783997543171",
+                "firingTriggerId": [
+                    "2147479573"
+                ],
+                "tagFiringOption": "ONCE_PER_EVENT",
+                "monitoringMetadata": {
+                    "type": "MAP"
+                },
+                "consentSettings": {
+                    "consentStatus": "NOT_SET"
+                }
+            },
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "tagId": "5",
+                "name": "Google Ads - Conversión - WHATSAPP Web Gusto",
+                "type": "awct",
+                "parameter": [
+                    {
+                        "type": "BOOLEAN",
+                        "key": "enableNewCustomerReporting",
+                        "value": "false"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "enableConversionLinker",
+                        "value": "true"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "enableProductReporting",
+                        "value": "false"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "enableShippingData",
+                        "value": "false"
+                    },
+                    {
+                        "type": "TEMPLATE",
+                        "key": "conversionId",
+                        "value": "18311599565"
+                    },
+                    {
+                        "type": "TEMPLATE",
+                        "key": "conversionLabel",
+                        "value": "ZhpwCI6-7s8cEM2r05tE"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "rdp",
+                        "value": "false"
+                    }
+                ],
+                "fingerprint": "1783997944497",
+                "firingTriggerId": [
+                    "7"
+                ],
+                "monitoringMetadata": {
+                    "type": "MAP"
+                },
+                "consentSettings": {
+                    "consentStatus": "NOT_SET"
+                }
+            },
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "tagId": "6",
+                "name": "Google Ads - Vinculador de conversiones",
+                "type": "gclidw",
+                "parameter": [
+                    {
+                        "type": "BOOLEAN",
+                        "key": "enableCrossDomain",
+                        "value": "false"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "enableUrlPassthrough",
+                        "value": "false"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "enableCookieOverrides",
+                        "value": "false"
+                    }
+                ],
+                "fingerprint": "1783997684314",
+                "firingTriggerId": [
+                    "2147479553"
+                ],
+                "tagFiringOption": "ONCE_PER_EVENT",
+                "monitoringMetadata": {
+                    "type": "MAP"
+                },
+                "consentSettings": {
+                    "consentStatus": "NOT_SET"
+                }
+            },
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "tagId": "8",
+                "name": "GA4 - Inicialización",
+                "type": "googtag",
+                "parameter": [
+                    {
+                        "type": "TEMPLATE",
+                        "key": "tagId",
+                        "value": "G-F10MZSQZVV"
+                    }
+                ],
+                "fingerprint": "1783998188291",
+                "firingTriggerId": [
+                    "2147479573"
+                ],
+                "tagFiringOption": "ONCE_PER_EVENT",
+                "monitoringMetadata": {
+                    "type": "MAP"
+                },
+                "consentSettings": {
+                    "consentStatus": "NOT_SET"
+                }
+            },
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "tagId": "9",
+                "name": "GA4 - Evento - WHATSAPP Web Gusto",
+                "type": "gaawe",
+                "parameter": [
+                    {
+                        "type": "BOOLEAN",
+                        "key": "sendEcommerceData",
+                        "value": "false"
+                    },
+                    {
+                        "type": "TEMPLATE",
+                        "key": "eventName",
+                        "value": "whatsapp_web"
+                    },
+                    {
+                        "type": "TEMPLATE",
+                        "key": "measurementIdOverride",
+                        "value": "G-F10MZSQZVV"
+                    }
+                ],
+                "fingerprint": "1783998322832",
+                "firingTriggerId": [
+                    "7"
+                ],
+                "tagFiringOption": "ONCE_PER_EVENT",
+                "monitoringMetadata": {
+                    "type": "MAP"
+                },
+                "consentSettings": {
+                    "consentStatus": "NOT_SET"
+                }
+            }
+        ],
+        "trigger": [
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "triggerId": "7",
+                "name": "Click WHATSAPP",
+                "type": "LINK_CLICK",
+                "filter": [
+                    {
+                        "type": "CONTAINS",
+                        "parameter": [
+                            {
+                                "type": "TEMPLATE",
+                                "key": "arg0",
+                                "value": "{{Click URL}}"
+                            },
+                            {
+                                "type": "TEMPLATE",
+                                "key": "arg1",
+                                "value": "wa.link"
+                            }
+                        ]
+                    }
+                ],
+                "waitForTags": {
+                    "type": "BOOLEAN",
+                    "value": "false"
+                },
+                "checkValidation": {
+                    "type": "BOOLEAN",
+                    "value": "false"
+                },
+                "waitForTagsTimeout": {
+                    "type": "TEMPLATE",
+                    "value": "2000"
+                },
+                "uniqueTriggerId": {
+                    "type": "TEMPLATE"
+                },
+                "fingerprint": "1783997919878"
+            }
+        ],
+        "builtInVariable": [
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "type": "PAGE_URL",
+                "name": "Page URL"
+            },
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "type": "PAGE_HOSTNAME",
+                "name": "Page Hostname"
+            },
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "type": "PAGE_PATH",
+                "name": "Page Path"
+            },
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "type": "REFERRER",
+                "name": "Referrer"
+            },
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "type": "EVENT",
+                "name": "Event"
+            },
+            {
+                "accountId": "6365235955",
+                "containerId": "257874818",
+                "type": "CLICK_URL",
+                "name": "Click URL"
+            }
+        ],
+        "fingerprint": "1783998334813",
+        "tagManagerUrl": "https://tagmanager.google.com/#/versions/accounts/6365235955/containers/257874818/versions/3?apiLink=version"
+    }
+}

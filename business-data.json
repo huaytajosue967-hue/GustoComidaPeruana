@@ -46,12 +46,10 @@
   "tono": "Premium, cálido, auténtico. Sin precios en la web (decisión del cliente, igual que competencia tipo Tanta/Osaka Nikkei/La Mar).",
   "google_tag_manager": "GTM-P6ZRCQ5Z",
   "notas": [
-    "El sitio ya tiene Google Tag Manager instalado (GTM-P6ZRCQ5Z) en index.html (raíz del repo) — no tocar ni romper bajo ninguna circunstancia en futuros cambios. Sin eventos custom configurados todavía.",
-    "No se muestran precios en la carta del sitio ni en el PDF de la carta, por decisión explícita del cliente. La página de pedidos (pedidos.html) es la única excepción: ahí sí se muestran precios porque es una herramienta de compra real.",
+    "El sitio en vivo es WordPress + Elementor. El contenido editable está en wordpress/pages/ y wordpress/snippets/ (ver README.md y wordpress/HANDOFF.md).",
+    "Google Tag Manager (GTM-P6ZRCQ5Z) se carga en todo el sitio vía el plugin GTM4WP — no tocar ni romper.",
+    "No se muestran precios en la carta del sitio ni en el PDF de la carta, por decisión explícita del cliente. La página de Pedidos es la única excepción: ahí sí se muestran precios porque es una herramienta de compra real.",
     "El hero usa un efecto de scroll-video (Machu Picchu) con assets/MachuPichuGustoVid.mp4, altura 280vh.",
-    "Hubo un bug de especificidad CSS (.nav-links a pisaba el padding de .nav-cta) ya resuelto con el selector compuesto .nav-links a.nav-cta.",
-    "legacy/ contiene los archivos originales sin usar en el sitio actual (fotos sin retocar, capturas de reseñas usadas solo como referencia de texto, la carta vieja en PDF, y una copia antigua de index.html ya no editada).",
-    "index.html, assets/ y legacy/ están en la raíz del repo (no en site/) desde que se resolvió el 403 de Hostinger — el hosting publica el repo tal cual, sin subcarpeta configurable.",
-    "pedidos.html (carrito de delivery) ya está enlazado desde index.html (nav, hero, sección de carta, galería) — dejó de estar en pruebas."
+    "sitio-estatico-viejo/ contiene el sitio HTML original (ya no publicado) y su subcarpeta legacy/ con fotos sin retocar, capturas de reseñas y la carta vieja en PDF. Solo como archivo/referencia."
   ]
 }

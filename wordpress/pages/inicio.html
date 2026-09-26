@@ -1,0 +1,481 @@
+<!--
+  Contenido para el widget HTML de Elementor en la página "Inicio".
+  Estructura de la página en Elementor (de arriba a abajo):
+    1. Widget "Shortcode"  -> gusto_header_full
+    2. Widget "HTML"       -> todo este archivo
+    3. Widget "Shortcode"  -> gusto_footer
+
+  IMPORTANTE: nunca escribir el nombre de un shortcode entre corchetes tipo corchete-nombre-corchete
+  en ningún comentario de este archivo — WordPress lo interpreta como una llamada real al
+  shortcode y lo reemplaza ahí mismo, rompiendo el HTML/CSS de alrededor. Escribir el nombre
+  sin corchetes (gusto_footer) para que quede como texto, no como una llamada.
+
+  Cambios respecto al index.html original:
+  - Se sacó el <nav>/mobile-panel (ahora vive en el shortcode gusto_header_full)
+  - Se sacó el footer (ahora vive en el shortcode gusto_footer)
+  - Se sacó el bloque de Google Tag Manager (lo va a poner GTM4WP en todo el sitio, al final)
+  - assets/... -> /assets/... (rutas absolutas a la carpeta subida por File Manager)
+  - menu/carta.html -> /menu/  |  pedidos.html -> /pedidos/
+  - Se sacó del <script> el "Nav scroll state" y "Mobile menu" (ya están dentro de gusto_header_full)
+-->
+<style>
+  .scroll-video-hero{height:280vh; position:relative;}
+  .scroll-video-sticky{position:sticky; top:0; height:100vh; width:100%; overflow:hidden;}
+  .scroll-video-sticky video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; background:var(--bg-deep);}
+  .hero-overlay{position:absolute; inset:0; z-index:1; background: radial-gradient(ellipse at 15% 15%, rgba(216,170,53,0.12), transparent 55%), linear-gradient(180deg, rgba(13,7,5,0.45) 0%, rgba(13,7,5,0.55) 45%, rgba(13,7,5,0.88) 100%);}
+  .hero-content{position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 24px;}
+  .hero-eyebrow{display:inline-flex; align-items:center; gap:10px; font-size:0.8rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--gold-bright); margin-bottom:22px; font-weight:700;}
+  .hero-eyebrow::before, .hero-eyebrow::after{content:''; width:28px; height:1px; background:var(--gold-deep);}
+  .hero-title{font-size:clamp(2.6rem, 7vw, 5.2rem); line-height:1.05; background:linear-gradient(135deg, var(--text-white) 20%, var(--gold-bright) 60%, var(--gold-deep) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:14px; max-width:900px;}
+  .hero-subtitle{font-family:var(--serif); font-style:italic; font-weight:500; font-size:clamp(1.05rem, 2.2vw, 1.5rem); color:var(--gold-bright); opacity:0.9; margin-bottom:26px; letter-spacing:0.02em;}
+  .hero-desc{font-size:clamp(1.05rem, 1.6vw, 1.3rem); color:var(--text-light); opacity:0.85; max-width:560px; margin:0 auto 40px; font-weight:400;}
+  .hero-ctas{display:flex; gap:18px; justify-content:center; flex-wrap:wrap;}
+  .btn{padding:16px 34px; border-radius:40px; font-weight:700; font-size:0.95rem; display:inline-flex; align-items:center; gap:10px; transition:transform .3s ease, box-shadow .3s ease;}
+  .btn-primary{background:linear-gradient(135deg, var(--gold), var(--orange)); color:var(--bg-deep); box-shadow:0 10px 30px rgba(216,170,53,0.35);}
+  .btn-primary:hover{transform:translateY(-3px); box-shadow:0 14px 36px rgba(216,170,53,0.5);}
+  .btn-ghost{border:1.5px solid rgba(255,255,255,0.5); color:var(--text-white); background:transparent; transition:transform .3s ease, background-color .3s ease, border-color .3s ease, color .3s ease;}
+  .btn-ghost:hover{border-color:#25D366; color:#25D366; background:#FFFFFF; transform:translateY(-3px);}
+  .btn-ghost svg{flex-shrink:0;}
+  .scroll-progress-bar{position:absolute; bottom:0; left:0; width:100%; height:3px; background:rgba(255,255,255,0.15); z-index:3;}
+  .scroll-progress-fill{height:100%; width:0%; background:linear-gradient(90deg, var(--gold-deep), var(--gold-bright)); transition:width 0.05s linear;}
+  @media (max-width:768px){ .scroll-video-hero{height:100vh;} .scroll-video-sticky{position:relative;} }
+  @media (prefers-reduced-motion: reduce){ .scroll-video-hero{height:100vh;} }
+
+  .reveal{opacity:0; transform:translateY(36px); transition:opacity .8s ease, transform .8s ease;}
+  .reveal.is-visible{opacity:1; transform:translateY(0);}
+  .reveal.scale{transform:scale(0.92);}
+  .reveal.scale.is-visible{transform:scale(1);}
+
+  .section-head{text-align:center; max-width:640px; margin:0 auto 64px;}
+  .eyebrow{font-size:0.78rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:14px; display:block;}
+  .section-head h2{font-size:clamp(2rem, 4vw, 3rem); color:var(--text-white); margin-bottom:16px;}
+  .section-head p{color:var(--text-muted); font-size:1.05rem;}
+
+  .about{padding:130px 0; position:relative;}
+  .about-grid{display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center;}
+  .about-media{aspect-ratio:4/5; border-radius:20px; position:relative; overflow:hidden; background:linear-gradient(135deg, var(--bg-brown), var(--bg-deep)); border:1px solid var(--border); display:flex; align-items:center; justify-content:center;}
+  .about-media::before{content:''; position:absolute; inset:0; z-index:1; pointer-events:none; background:radial-gradient(circle at 30% 30%, rgba(216,170,53,0.22), transparent 60%);}
+  .about-media img{width:100%; height:100%; object-fit:cover; position:absolute; inset:0;}
+  .about-text .eyebrow{margin-bottom:14px;}
+  .about-text h2{font-size:clamp(1.9rem,3.4vw,2.6rem); color:var(--text-white); margin-bottom:22px;}
+  .about-text p{color:var(--text-light); opacity:0.85; margin-bottom:20px; font-size:1.03rem;}
+  .stats{display:flex; gap:48px; margin-top:40px;}
+  .stat-number{font-family:var(--serif); font-size:2.8rem; font-weight:800; color:var(--gold-bright); line-height:1;}
+  .stat-label{font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-top:6px;}
+
+  .menu{padding:130px 0; background:linear-gradient(180deg, var(--bg-primary), var(--bg-brown) 50%, var(--bg-primary));}
+  .menu-category{margin-bottom:70px;}
+  .menu-category h3{color:var(--gold); font-size:1.5rem; margin-bottom:30px; display:flex; align-items:center; gap:16px;}
+  .menu-category h3::after{content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--gold-deep), transparent);}
+  .menu-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:20px;}
+  .dish-card{background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:16px; padding:26px 24px; transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease, background .35s ease;}
+  .dish-card:hover{transform:translateY(-6px); border-color:var(--gold); background:rgba(216,170,53,0.05); box-shadow:0 16px 40px rgba(0,0,0,0.35);}
+  .dish-card h4{font-family:var(--serif); font-size:1.2rem; color:var(--text-white); font-weight:600;}
+  .dish-tag{display:inline-block; margin-top:10px; font-size:0.72rem; color:var(--gold-bright); letter-spacing:0.08em; text-transform:uppercase; font-weight:700;}
+  .dish-desc{margin-top:10px; font-size:0.9rem; color:var(--text-muted); line-height:1.55;}
+  .menu-note{text-align:center; margin-top:20px; color:var(--text-muted); font-size:0.95rem;}
+  .menu-note a{color:#25D366; font-weight:700; border-bottom:1px solid #25D366;}
+  .menu-cta{display:flex; justify-content:center; flex-wrap:wrap; gap:18px; margin-top:28px;}
+
+  .gallery{padding:130px 0;}
+  .gallery-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:18px;}
+  .gallery-item{aspect-ratio:1; border-radius:14px; overflow:hidden; position:relative; background:linear-gradient(145deg, var(--bg-brown), var(--bg-deep)); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; transition:transform .4s ease;}
+  .gallery-item:nth-child(3n+1){background:linear-gradient(145deg, #2A1206, #1D1D23);}
+  .gallery-item:nth-child(3n+2){background:linear-gradient(145deg, #331407, #0D0705);}
+  .gallery-item:hover{transform:scale(1.03);}
+  .gallery-item span{color:var(--gold-deep); font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; opacity:0.7; font-weight:700;}
+  .gallery-item img{width:100%; height:100%; object-fit:cover;}
+
+  .testimonials{padding:130px 0; background:linear-gradient(180deg, var(--bg-primary), var(--bg-brown) 50%, var(--bg-primary));}
+  .testimonials-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(270px, 1fr)); gap:22px;}
+  .testimonial-card{background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:16px; padding:28px 26px; display:flex; flex-direction:column; gap:14px; transition:transform .35s ease, border-color .35s ease;}
+  .testimonial-card:hover{transform:translateY(-6px); border-color:var(--gold);}
+  .t-stars{color:var(--gold-bright); font-size:1rem; letter-spacing:2px;}
+  .t-quote{color:var(--text-light); opacity:0.88; font-size:0.94rem; line-height:1.65; flex:1;}
+  .t-author{display:flex; flex-direction:column; gap:2px; padding-top:10px; border-top:1px solid var(--border);}
+  .t-name{font-family:var(--serif); color:var(--text-white); font-weight:600; font-size:0.98rem;}
+  .t-date{font-size:0.78rem; color:var(--text-muted);}
+
+  .contact{padding:130px 0 60px; background:var(--bg-deep); position:relative;}
+  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:60px;}
+  .contact-info h2{color:var(--text-white); font-size:clamp(1.9rem,3.4vw,2.6rem); margin-bottom:24px;}
+  .contact-item{display:flex; gap:16px; margin-bottom:26px; align-items:flex-start;}
+  .contact-icon{width:44px; height:44px; border-radius:12px; flex-shrink:0; background:linear-gradient(135deg, var(--gold), var(--orange)); display:flex; align-items:center; justify-content:center; color:var(--bg-deep);}
+  .contact-item h4{font-size:0.95rem; color:var(--text-white); margin-bottom:4px;}
+  .contact-item p, .contact-item a{color:var(--text-muted); font-size:0.94rem;}
+  .contact-item a:hover{color:var(--gold-bright);}
+  .social-row{display:flex; gap:14px; margin-top:30px;}
+  .social-row a{width:46px; height:46px; border-radius:50%; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; transition:.3s;}
+  .social-row a:hover{border-color:var(--gold); background:rgba(216,170,53,0.1); transform:translateY(-3px);}
+  .map-frame{border-radius:18px; overflow:hidden; border:1px solid var(--border); min-height:340px;}
+  .map-frame iframe{width:100%; height:100%; min-height:340px; border:0; filter:grayscale(0.3) contrast(1.1);}
+
+  @media (max-width:860px){
+    .about-grid, .contact-grid{grid-template-columns:1fr; gap:40px;}
+    .gallery-grid{grid-template-columns:repeat(2,1fr);}
+    .stats{gap:32px;}
+  }
+  @media (max-width:480px){
+    .gallery-grid{grid-template-columns:1fr 1fr;}
+    .hero-ctas{flex-direction:column; width:100%;}
+    .btn{justify-content:center;}
+  }
+</style>
+
+<header class="scroll-video-hero" id="scroll-hero">
+  <div class="scroll-video-sticky">
+    <video id="heroVideo" src="/assets/MachuPichuGustoVid.mp4" poster="/assets/MachuPichuGusto.png" playsinline muted preload="auto"></video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-eyebrow">Barrio Chino · Belgrano · CABA</span>
+      <h1 class="hero-title">Gusto Comida Peruana</h1>
+      <p class="hero-subtitle">Auténtico Sabor Peruano</p>
+      <p class="hero-desc">Ceviches y mariscos frescos, cocinados con el cariño de siempre. Lo mejor del Perú en tu mesa.</p>
+      <div class="hero-ctas">
+        <a href="/menu/" target="_blank" rel="noopener" class="btn btn-primary">Ver la Carta Completa</a>
+        <a href="/pedidos/" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          ¡Pedí Delivery!
+        </a>
+        <a href="https://wa.link/amosx9" target="_blank" rel="noopener" class="btn btn-ghost">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.34c1.36.72 2.91 1.13 4.56 1.13h.01c5.46 0 9.91-4.45 9.91-9.91C21.9 6.45 17.5 2 12.04 2Zm5.78 14.02c-.24.68-1.4 1.3-1.93 1.36-.5.06-1.02.26-3.43-.72-2.9-1.18-4.77-4.12-4.92-4.31-.14-.19-1.17-1.56-1.17-2.98s.75-2.11 1.01-2.4c.26-.28.57-.35.76-.35h.55c.18 0 .42-.03.65.5.24.55.8 1.9.87 2.04.07.14.11.3.02.49-.09.19-.14.3-.28.46-.14.16-.29.36-.42.48-.14.14-.28.29-.12.57.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.6-.07.16-.19.7-.81.88-1.09.19-.28.37-.23.62-.14.26.09 1.6.76 1.88.89.28.14.46.21.53.32.07.12.07.68-.17 1.36Z"/></svg>
+          Reservá por WhatsApp
+        </a>
+      </div>
+    </div>
+    <div class="scroll-progress-bar"><div class="scroll-progress-fill" id="progressFill"></div></div>
+  </div>
+</header>
+
+<section class="about" id="nosotros">
+  <div class="wrap about-grid">
+    <div class="about-media reveal scale">
+      <img src="/assets/SalónGusto.png" alt="Salón de Gusto Comida Peruana" loading="lazy">
+    </div>
+    <div class="about-text reveal">
+      <span class="eyebrow">Nuestra Historia</span>
+      <h2>Fundado con amor, hecho para compartir</h2>
+      <p>Gusto Comida Peruana nació a finales de 2019 en el corazón del Barrio Chino de Belgrano, del deseo de compartir y representar los sabores auténticos del Perú.</p>
+      <p>Nos especializamos en ceviches y mariscos frescos, preparados con las técnicas tradicionales de la cocina peruana — sin perder el toque casero que nos distingue.</p>
+      <div class="stats">
+        <div>
+          <div class="stat-number" data-target="7">0</div>
+          <div class="stat-label">Años de trayectoria</div>
+        </div>
+        <div>
+          <div class="stat-number" data-target="11">0</div>
+          <div class="stat-label">Platos destacados en la carta</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="menu" id="carta">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Nuestra Carta</span>
+      <h2>Algunos de nuestros platos</h2>
+      <p>Una selección de nuestros favoritos, elaborados con ingredientes frescos al estilo tradicional peruano. Esta no es la carta completa.</p>
+    </div>
+
+    <div class="menu-category">
+      <h3 class="reveal">Entradas & Piqueos</h3>
+      <div class="menu-grid">
+        <div class="dish-card reveal">
+          <h4>Causa Gusto</h4>
+          <p class="dish-desc">Puré de papa relleno con tartar de camarones, langostinos apanados y mayonesa de la casa.</p>
+        </div>
+        <div class="dish-card reveal">
+          <h4>Anticucho & Huancaína</h4>
+          <p class="dish-desc">Pinchos de anticucho acompañados de papas a la huancaína.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-category">
+      <h3 class="reveal">Ceviches</h3>
+      <div class="menu-grid">
+        <div class="dish-card reveal">
+          <h4>Ceviche de Pescado</h4>
+          <p class="dish-desc">El clásico peruano: pescado fresco marinado en limón, con batata y cancha.</p>
+        </div>
+        <div class="dish-card reveal">
+          <h4>Ceviche Gusto</h4>
+          <p class="dish-desc">Nuestro especial: camarones y pescado marinados en leche de tigre, con batata.</p>
+        </div>
+        <div class="dish-card reveal">
+          <h4>Tiradito Criollo</h4>
+          <p class="dish-desc">Pesca del día en salsa de ají amarillo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-category">
+      <h3 class="reveal">Pescados & Mariscos</h3>
+      <div class="menu-grid">
+        <div class="dish-card reveal">
+          <h4>Parrilla de Mariscos</h4>
+          <p class="dish-desc">Abundantes mariscos a la plancha bañados en suave crema de langosta. Para compartir.</p>
+        </div>
+        <div class="dish-card reveal">
+          <h4>Jalea Mixta</h4>
+          <p class="dish-desc">Pescados y mariscos apanados y fritos, con criolla, papas y tártara. Para compartir.</p>
+        </div>
+        <div class="dish-card reveal">
+          <h4>Arroz con Mariscos</h4>
+          <p class="dish-desc">Arroz con mixtura de mariscos, aderezado con ajíes y vino blanco, más ensalada criolla.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-category">
+      <h3 class="reveal">Platos Criollos</h3>
+      <div class="menu-grid">
+        <div class="dish-card reveal">
+          <h4>Lomo Saltado</h4>
+          <p class="dish-desc">Trocitos de lomo salteados al wok con cebolla y tomate, con arroz y papas fritas.</p>
+        </div>
+        <div class="dish-card reveal">
+          <h4>Chicharrón de Cerdo</h4>
+          <p class="dish-desc">Trozos de cerdo fritos, acompañados con papas doradas y ensalada criolla.</p>
+        </div>
+        <div class="dish-card reveal">
+          <h4>Chaufa Mixto</h4>
+          <p class="dish-desc">Arroz salteado con pollo, carne, verduras y salsa de soja.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="menu-note reveal">No cobramos cubiertos. Consultá disponibilidad y precios por <a href="https://wa.link/amosx9" target="_blank" rel="noopener">WhatsApp</a></p>
+    <div class="menu-cta reveal">
+      <a href="/menu/" target="_blank" rel="noopener" class="btn btn-primary">Ver la Carta Completa</a>
+      <a href="/pedidos/" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        ¡Pedí Delivery!
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="gallery" id="galeria">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Galería</span>
+      <h2>Un vistazo a Gusto</h2>
+      <p>Así se ve y se disfruta la cocina de Gusto.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item reveal scale"><img src="/assets/RetocLomoSalteado.png" alt="Lomo Saltado" loading="lazy"></div>
+      <div class="gallery-item reveal scale"><img src="/assets/RetocBrochetCamarones.png" alt="Brochetas de camarones a la parrilla" loading="lazy"></div>
+      <div class="gallery-item reveal scale"><img src="/assets/RetocArrozConMariscos.png" alt="Arroz con mariscos" loading="lazy"></div>
+      <div class="gallery-item reveal scale"><img src="/assets/RetocCausaAcevichadaSalmónRosado.png" alt="Causa acevichada de salmón rosado" loading="lazy"></div>
+      <div class="gallery-item reveal scale"><img src="/assets/RetocChicharronCerdo.png" alt="Chicharrón de cerdo" loading="lazy"></div>
+      <div class="gallery-item reveal scale"><img src="/assets/RetocCeviche.png" alt="Ceviche de pescado" loading="lazy"></div>
+      <div class="gallery-item reveal scale"><img src="/assets/PiscoSour.png" alt="Pisco Sour" loading="lazy" style="object-position:center 85%;"></div>
+      <div class="gallery-item reveal scale"><img src="/assets/MixturaDeMariscos.png" alt="Mixtura de Mariscos" loading="lazy"></div>
+      <div class="gallery-item reveal scale"><img src="/assets/InkaCola.png" alt="Inka Cola" loading="lazy"></div>
+    </div>
+    <div class="menu-cta reveal">
+      <a href="/pedidos/" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        ¡Pedí Delivery!
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials" id="resenas">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Reseñas de Google</span>
+      <h2>Lo que dicen nuestros clientes</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"El servicio súper rápido y las camareras muy amables, nos atendieron súper bien. La comida riquísima! Comimos 3. Pedimos un ceviche gusto, estaba increíble y súper abundante. Unos tequeños y una salchipapa que sobraron casi enteras. La jarra de maracuyá deliciosa."</p>
+        <div class="t-author">
+          <span class="t-name">Sofia Rattagan</span>
+          <span class="t-date">Hace 4 meses · Google</span>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"Excelente comida! Muy rica y abundante! Pedimos anticucho, tiradito y cebiche de salmón rosado, y de postre un tres leches. Todo fresco, buenos acompañamientos y ambiente muy tranquilo. Totalmente recomendado! :D"</p>
+        <div class="t-author">
+          <span class="t-name">Liza Chambi</span>
+          <span class="t-date">Hace 7 meses · Google</span>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"Increíble lugar! Viajamos a Perú con las delicias que comimos, la atención excelente hasta recomendación de platos y explicando que platos eran para compartir. Una experiencia riquísima!"</p>
+        <div class="t-author">
+          <span class="t-name">Agustina Nieto</span>
+          <span class="t-date">Hace 10 meses · Google</span>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"La comida es riquísima y los platos muy abundantes y para compartir. En particular a mi me encanta el ceviche y aca lo preparan riquísimo. Los precios son razonables y el local esta muy bien."</p>
+        <div class="t-author">
+          <span class="t-name">Ezequiel Picarelli</span>
+          <span class="t-date">Hace 5 meses · Google</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contacto">
+  <div class="wrap contact-grid">
+    <div class="contact-info reveal">
+      <span class="eyebrow">Contacto</span>
+      <h2>Te esperamos</h2>
+
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div><h4>Dirección</h4><p>Olazábal 1679, Barrio Chino, Belgrano, CABA</p></div>
+      </div>
+
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div><h4>Horario</h4><p>Lun a sáb: 12:00–23:00 · Dom: 12:00–18:00</p></div>
+      </div>
+
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <div><h4>Horario de Delivery</h4><p>Lun a sáb: 12:00–16:00 y 18:00–23:00 · Dom: 12:00–16:00</p></div>
+      </div>
+
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div><h4>WhatsApp</h4><a href="https://wa.link/amosx9" target="_blank" rel="noopener">Reservas y delivery</a></div>
+      </div>
+
+      <div class="social-row">
+        <a href="https://instagram.com/gustocomidaperuana" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#D8AA35" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        </a>
+        <a href="https://facebook.com/gustocomidaperuana" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#D8AA35" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="https://wa.link/amosx9" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#D8AA35" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="map-frame reveal">
+      <iframe
+        src="https://maps.google.com/maps?q=Olaz%C3%A1bal%201679%2C%20Belgrano%2C%20CABA&t=&z=15&ie=UTF8&iwloc=&output=embed"
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        title="Ubicación Gusto Comida Peruana"></iframe>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Reveal + stagger
+  const revealEls = document.querySelectorAll('.reveal');
+  if (prefersReduced) {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+  } else {
+    const groups = new Map();
+    revealEls.forEach(el => {
+      const parent = el.parentElement;
+      if (!groups.has(parent)) groups.set(parent, []);
+      groups.get(parent).push(el);
+    });
+    groups.forEach(list => list.forEach((el, i) => el.style.transitionDelay = Math.min(i * 90, 360) + 'ms'));
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => io.observe(el));
+  }
+
+  // Counters
+  const counters = document.querySelectorAll('.stat-number');
+  const counterIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseInt(el.dataset.target, 10);
+      if (prefersReduced) { el.textContent = target; counterIO.unobserve(el); return; }
+      const duration = 1400;
+      const start = performance.now();
+      function tick(now){
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(eased * target);
+        if (p < 1) requestAnimationFrame(tick); else el.textContent = target;
+      }
+      requestAnimationFrame(tick);
+      counterIO.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(el => counterIO.observe(el));
+
+  // Scroll-driven hero video
+  (function(){
+    const video = document.getElementById('heroVideo');
+    const hero = document.getElementById('scroll-hero');
+    const progressFill = document.getElementById('progressFill');
+    if (!video || !hero) return;
+
+    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+    if (isTouchDevice || prefersReduced) {
+      video.autoplay = true;
+      video.loop = true;
+      video.play().catch(() => {});
+      return;
+    }
+
+    video.pause();
+    video.currentTime = 0;
+    let isReady = false;
+    video.addEventListener('loadedmetadata', () => { isReady = true; });
+    video.load();
+
+    function updateVideo(){
+      if (!isReady || !video.duration) return;
+      const rect = hero.getBoundingClientRect();
+      const scrolled = -rect.top;
+      const scrollable = hero.offsetHeight - window.innerHeight;
+      if (scrolled <= 0) { video.currentTime = 0; if (progressFill) progressFill.style.width = '0%'; return; }
+      if (scrolled >= scrollable) { video.currentTime = video.duration; if (progressFill) progressFill.style.width = '100%'; return; }
+      const progress = scrolled / scrollable;
+      video.currentTime = progress * video.duration;
+      if (progressFill) progressFill.style.width = (progress * 100) + '%';
+    }
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => { updateVideo(); ticking = false; });
+        ticking = true;
+      }
+    }, { passive:true });
+    window.addEventListener('resize', updateVideo);
+  })();
+})();
+</script>

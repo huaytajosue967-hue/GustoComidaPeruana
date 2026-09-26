@@ -1,0 +1,1094 @@
+<!--
+  Contenido para el widget HTML de Elementor en la página "Pedidos".
+  Estructura de la página en Elementor (de arriba a abajo):
+    1. Widget "Shortcode"  -> gusto_header_simple
+    2. Widget "HTML"       -> todo este archivo
+    3. Widget "Shortcode"  -> gusto_footer
+
+  IMPORTANTE: nunca escribir el nombre de un shortcode entre corchetes tipo corchete-nombre-corchete
+  en ningún comentario de este archivo (ni siquiera como ejemplo, como estoy haciendo acá a propósito
+  sin los corchetes reales) — WordPress lo interpreta como una llamada real al shortcode y lo
+  reemplaza ahí mismo, rompiendo el HTML/CSS de alrededor. Esto fue justo lo que rompió esta
+  página: un comentario tenía el nombre entre corchetes cerca de la línea 50, y WordPress metió
+  ahí todo el HTML/CSS del header en medio del <style>, cortándolo por la mitad. Escribir el
+  nombre sin corchetes para que quede como texto, no como una llamada.
+
+  Cambios respecto al pedidos.html original:
+  - Se sacó todo el <head> (meta tags, título, canonical, schema, preconnect de fuentes):
+    las fuentes ya las carga gusto_base_styles() desde el header, y meta/SEO se arma
+    más adelante con Yoast/RankMath.
+  - Se sacó el <header> propio (logo + "Volver al sitio"); ahora vive en el shortcode gusto_header_simple.
+  - Como el header de WordPress es position:fixed (no ocupa espacio en el flujo, a diferencia
+    del <header> sticky del sitio original), se envolvió el contenido en .gusto-pedidos-wrap
+    con padding-top:100px para que no quede tapado — mismo valor que se usó en menu.html para
+    compensar ese mismo header. Si el alto real del header cambia, hay que reajustar acá.
+  - El "top: 71px" de .cat-nav (para que la barra de categorías quede pegada justo debajo
+    del header al hacer scroll) se dejó con el mismo valor que tenía el pedidos.html original;
+    si se ve desalineado contra el header, ajustar ese número.
+  - No se tocó la lógica de JS (carrito, pasos, WhatsApp) ni los datos de menú/países.
+-->
+<style>
+  :root {
+    --bg-primary: #1D1D23;
+    --bg-deep: #0D0705;
+    --bg-brown: #2A1206;
+    --surface: #26201B;
+    --gold: #D8AA35;
+    --gold-bright: #ECAA00;
+    --gold-deep: #B97810;
+    --orange: #FA8C00;
+    --text-light: #F2F2F2;
+    --text-muted: #B8AFA4;
+    --border: rgba(216,170,53,0.22);
+    --whatsapp: #25D366;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Manrope', sans-serif;
+    --radius: 14px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  img { max-width: 100%; display: block; }
+  a { text-decoration: none; color: inherit; }
+  h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.2; }
+  button { font-family: inherit; cursor: pointer; }
+  input, textarea { font-family: inherit; font-size: 1rem; }
+
+  .container { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+
+  /* Envoltorio: compensa el header fijo del shortcode gusto_header_simple (no está en el flujo) */
+  .gusto-pedidos-wrap {
+    font-family: var(--font-body);
+    color: var(--text-light);
+    line-height: 1.55;
+    padding-top: 100px;
+    padding-bottom: 40px;
+  }
+
+  /* Stepper */
+  .stepper {
+    display: flex;
+    max-width: 760px;
+    margin: 18px auto 0;
+    padding: 0 20px;
+    gap: 6px;
+    align-items: center;
+  }
+  .stepper .step-dot {
+    flex: 1;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: rgba(242,242,242,0.35);
+    padding-bottom: 8px;
+    border-bottom: 3px solid rgba(216,170,53,0.15);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .stepper .step-dot.active { color: var(--gold-bright); border-color: var(--gold); }
+  .stepper .step-dot.done { color: var(--gold); border-color: rgba(216,170,53,0.5); }
+
+  main { max-width: 760px; margin: 0 auto; padding: 28px 20px 120px; }
+
+  .step { display: none; animation: fadeIn 0.25s ease; }
+  .step.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .page-title { font-size: 1.8rem; font-weight: 700; color: var(--text-light); margin-bottom: 6px; }
+  .page-sub { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; }
+
+  /* Notice banner */
+  .notice {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: rgba(216,170,53,0.08);
+    border-left: 4px solid var(--gold);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 26px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+  .notice svg { flex-shrink: 0; margin-top: 2px; color: var(--gold); }
+  .notice strong { display: block; margin-bottom: 2px; color: var(--gold-bright); }
+
+  .notice-whatsapp {
+    background: rgba(37,211,102,0.1);
+    border-left-color: var(--whatsapp);
+  }
+  .notice-whatsapp svg { color: var(--whatsapp); }
+  .notice-whatsapp strong { color: #4EE08A; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 26px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.98rem;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s, opacity 0.2s;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--gold), var(--orange)); color: var(--bg-deep); box-shadow: 0 10px 24px rgba(216,170,53,0.3); }
+  .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(216,170,53,0.4); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+  .btn-outline { background: transparent; color: var(--text-light); border: 1.5px solid var(--border); }
+  .btn-outline:hover { background: rgba(216,170,53,0.08); }
+  .btn-block { width: 100%; }
+  .btn-row { display: flex; gap: 12px; margin-top: 26px; }
+  .btn-row .btn { flex: 1; }
+
+  /* Category quick-nav */
+  .cat-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0 14px;
+    margin-bottom: 8px;
+    position: sticky;
+    top: 71px;
+    background: var(--bg-primary);
+    z-index: 20;
+    scrollbar-width: thin;
+  }
+  .cat-nav button {
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    color: var(--text-light);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .cat-nav button:hover { border-color: var(--gold); color: var(--gold-bright); }
+
+  .menu-category { margin-bottom: 30px; scroll-margin-top: 130px; }
+  .menu-category h3 {
+    font-size: 1.25rem;
+    color: var(--gold-bright);
+    padding-bottom: 8px;
+    margin-bottom: 6px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(216,170,53,0.1);
+  }
+  .menu-item-info h4 { font-size: 1rem; color: var(--text-light); font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .menu-item-info p { font-size: 0.85rem; color: var(--text-muted); margin-top: 3px; }
+  .veg-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #8fd98f;
+    background: rgba(63,125,63,0.2);
+    border-radius: 20px;
+    padding: 1px 8px;
+    letter-spacing: 0.02em;
+  }
+  .menu-item-controls { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+  .menu-item-price { font-weight: 700; color: var(--gold-bright); font-size: 0.95rem; white-space: nowrap; }
+
+  .qty-stepper { display: flex; align-items: center; gap: 10px; }
+  .qty-btn {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    background: transparent;
+    color: var(--gold-bright);
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+    transition: background 0.15s, color 0.15s, opacity 0.15s;
+  }
+  .qty-btn:hover:not(:disabled) { background: var(--gold); color: var(--bg-deep); }
+  .qty-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: rgba(216,170,53,0.2); color: rgba(216,170,53,0.3); }
+  .qty-value { min-width: 18px; text-align: center; font-weight: 700; }
+
+  .special-box { margin-top: 6px; margin-bottom: 90px; }
+  .special-box label { display: block; font-weight: 700; color: var(--gold-bright); margin-bottom: 8px; font-size: 0.95rem; }
+  .special-box textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    resize: vertical;
+    min-height: 80px;
+    background: var(--surface);
+    color: var(--text-light);
+  }
+  .special-box textarea:focus { outline: none; border-color: var(--gold); }
+
+  /* Sticky cart bar */
+  .cart-bar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    background: var(--bg-deep);
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.4);
+    z-index: 90;
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+    border-top: 1px solid var(--border);
+  }
+  .cart-bar.visible { transform: translateY(0); }
+  .cart-bar-info { display: flex; flex-direction: column; }
+  .cart-bar-info strong { font-size: 0.95rem; }
+  .cart-bar-info span { font-size: 0.82rem; color: var(--gold); }
+  .cart-bar .btn-primary { flex-shrink: 0; }
+
+  /* Summary */
+  .summary-list { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 22px; margin-bottom: 20px; }
+  .summary-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(216,170,53,0.1); font-size: 0.95rem; }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .name { font-weight: 600; }
+  .summary-row .sub { color: var(--text-muted); font-size: 0.82rem; }
+  .summary-total-row { display: flex; justify-content: space-between; padding-top: 14px; margin-top: 6px; border-top: 2px solid var(--border); font-weight: 700; font-size: 1.1rem; color: var(--gold-bright); }
+  .summary-note { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 20px; margin-bottom: 20px; font-size: 0.9rem; }
+  .summary-note strong { display: block; color: var(--gold-bright); margin-bottom: 4px; }
+  .empty-note { color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 30px 0; }
+
+  /* Distance cards */
+  .distance-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
+  .distance-card { position: relative; display: block; cursor: pointer; }
+  .distance-card input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .distance-card-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    background: var(--surface);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .distance-card input:checked + .distance-card-inner {
+    border-color: var(--gold);
+    background: rgba(216,170,53,0.1);
+  }
+  .distance-card-inner strong { font-size: 0.95rem; color: var(--text-light); }
+  .distance-card-inner .price-tag { font-weight: 700; color: var(--gold-bright); font-size: 0.9rem; white-space: nowrap; }
+
+  fieldset { border: none; margin: 26px 0 6px; }
+  legend { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: var(--gold-bright); margin-bottom: 12px; padding: 0; }
+
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-weight: 600; font-size: 0.88rem; color: var(--text-light); margin-bottom: 6px; }
+  .field input {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: var(--surface);
+    color: var(--text-light);
+  }
+  .field input:focus { outline: none; border-color: var(--gold); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; }
+
+  /* Phone field + country picker */
+  .phone-field { position: relative; display: flex; gap: 8px; }
+  .country-select-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+  .country-select-btn:hover { border-color: var(--gold); }
+  .country-select-btn .flag { font-size: 1.15rem; line-height: 1; }
+  .country-select-btn svg { color: var(--gold); flex-shrink: 0; }
+  .phone-field input[type="tel"] { flex: 1; min-width: 0; }
+
+  .country-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 290px;
+    max-width: calc(100vw - 40px);
+    max-height: 300px;
+    background: var(--bg-brown);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    z-index: 60;
+    overflow: hidden;
+    flex-direction: column;
+  }
+  .country-dropdown.open { display: flex; }
+  .country-search {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 14px;
+    background: transparent;
+    color: var(--text-light);
+    flex-shrink: 0;
+  }
+  .country-search:focus { outline: none; }
+  .country-list { list-style: none; overflow-y: auto; }
+  .country-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    cursor: pointer;
+    font-size: 0.86rem;
+  }
+  .country-list li:hover { background: rgba(216,170,53,0.1); }
+  .country-list li .flag { font-size: 1.1rem; }
+  .country-list li .cname { flex: 1; }
+  .country-list li .dial { color: var(--text-muted); font-size: 0.78rem; }
+  .country-list .no-results { padding: 14px; color: var(--text-muted); font-size: 0.85rem; text-align: center; cursor: default; }
+
+  .whatsapp-cta {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px 22px;
+    text-align: center;
+    margin-top: 26px;
+  }
+  .whatsapp-cta p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 14px; }
+  .btn-whatsapp { background: var(--whatsapp); color: #fff; }
+  .btn-whatsapp:hover:not(:disabled) { background: #1eb658; transform: translateY(-2px); }
+
+  .final-links { text-align: center; margin-top: 18px; }
+  .final-links a { font-size: 0.85rem; font-weight: 600; color: var(--gold); }
+  .final-links a:hover { color: var(--gold-bright); }
+
+  @media (max-width: 640px) {
+    .field-row { grid-template-columns: 1fr; }
+    .cart-bar { padding: 12px 16px; }
+    .page-title { font-size: 1.5rem; }
+  }
+</style>
+
+<div class="gusto-pedidos-wrap">
+
+<div class="stepper" id="stepper">
+  <span class="step-dot" data-step="menu">1. Menú</span>
+  <span class="step-dot" data-step="summary">2. Resumen</span>
+  <span class="step-dot" data-step="delivery">3. Entrega</span>
+</div>
+
+<main>
+
+  <!-- STEP: MENU -->
+  <section class="step active" id="step-menu">
+    <h1 class="page-title">Elegí tus platos</h1>
+
+    <div class="notice notice-whatsapp">
+      <svg viewBox="0 0 32 32" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16.04 3C9.37 3 3.98 8.39 3.98 15.06c0 2.24.61 4.33 1.67 6.13L3 29l7.99-2.6a11.99 11.99 0 0 0 5.05 1.1h.01c6.67 0 12.06-5.39 12.06-12.06C28.11 8.39 22.72 3 16.05 3h-.01zm7.02 17.24c-.3.83-1.72 1.6-2.38 1.69-.61.09-1.38.13-2.23-.14-.51-.16-1.17-.38-2.02-.75-3.56-1.54-5.88-5.14-6.06-5.38-.18-.24-1.45-1.93-1.45-3.68s.92-2.61 1.25-2.97c.32-.35.71-.44.95-.44.24 0 .48 0 .69.01.22.01.52-.08.81.62.3.72 1.02 2.49 1.11 2.67.09.18.15.39.03.63-.12.24-.18.39-.36.6-.18.21-.38.47-.54.63-.18.18-.37.37-.16.73.21.35.93 1.53 1.99 2.48 1.37 1.22 2.52 1.6 2.88 1.78.36.18.57.15.78-.09.21-.24.9-1.05 1.14-1.41.24-.35.48-.29.81-.18.33.12 2.09.99 2.45 1.17.36.18.6.27.69.42.09.15.09.85-.21 1.68z"/></svg>
+      <div><strong>¿Cómo funciona?</strong>Sumá lo que quieras con el botón "+" y al final vas a poder enviar tu pedido completo por WhatsApp para coordinar la entrega. Podés dejar tus indicaciones antes de enviarlo.</div>
+    </div>
+
+    <div class="notice">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+      <div><strong>Importante</strong>Por el momento no hacemos envíos a más de 6&nbsp;km de distancia del local. Horario de delivery: Lun a sáb 12:00–16:00 y 18:00–23:00 hs · Dom 12:00–16:00 hs.</div>
+    </div>
+
+    <nav class="cat-nav" id="cat-nav" aria-label="Categorías"></nav>
+
+    <div id="menu-container"></div>
+
+    <div class="special-box">
+      <label for="special-instructions">Indicaciones para tu pedido (opcional)</label>
+      <textarea id="special-instructions" placeholder="Ej: sin cebolla, poco picante, no picante..."></textarea>
+    </div>
+  </section>
+
+  <!-- STEP: SUMMARY -->
+  <section class="step" id="step-summary">
+    <h1 class="page-title">Confirmá tu pedido</h1>
+    <p class="page-sub">Revisá que esté todo bien antes de seguir.</p>
+
+    <div id="summary-list" class="summary-list"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" id="btn-back-to-menu" type="button">&larr; Editar pedido</button>
+      <button class="btn btn-primary" id="btn-confirm-order" type="button">Confirmar pedido &rarr;</button>
+    </div>
+  </section>
+
+  <!-- STEP: DELIVERY + PAYMENT -->
+  <section class="step" id="step-delivery">
+    <h1 class="page-title">Datos de entrega</h1>
+
+    <form id="delivery-form" novalidate>
+      <fieldset>
+        <legend>¿Qué tan lejos estás?</legend>
+        <div class="distance-grid">
+          <label class="distance-card">
+            <input type="radio" name="distance" value="near" required>
+            <span class="distance-card-inner">
+              <strong>Menos de 2.5 km (25 cuadras)</strong>
+              <span class="price-tag">GRATIS</span>
+            </span>
+          </label>
+          <label class="distance-card">
+            <input type="radio" name="distance" value="mid" required>
+            <span class="distance-card-inner">
+              <strong>2.6 km – 5 km</strong>
+              <span class="price-tag">$4.000</span>
+            </span>
+          </label>
+          <label class="distance-card">
+            <input type="radio" name="distance" value="far" required>
+            <span class="distance-card-inner">
+              <strong>5 km – 6 km</strong>
+              <span class="price-tag">$5.000</span>
+            </span>
+          </label>
+        </div>
+        <div class="notice" style="margin-top:14px;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          <div>No hacemos envíos a más de 6&nbsp;km de distancia.</div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Tus datos</legend>
+        <div class="field">
+          <label for="f-nombre">Nombre</label>
+          <input type="text" id="f-nombre" name="nombre" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="f-telefono">Número de teléfono (opcional)</label>
+          <div class="phone-field">
+            <button type="button" class="country-select-btn" id="country-select-btn" aria-haspopup="listbox" aria-expanded="false">
+              <span class="flag" id="country-flag"></span>
+              <span id="country-dial"></span>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <input type="tel" id="f-telefono" name="telefono" inputmode="numeric" autocomplete="tel" placeholder="1122334455">
+            <div class="country-dropdown" id="country-dropdown" role="listbox">
+              <input type="text" id="country-search" class="country-search" placeholder="Buscar país...">
+              <ul class="country-list" id="country-list"></ul>
+            </div>
+          </div>
+          <p class="field-hint" id="phone-hint"></p>
+        </div>
+        <div class="field">
+          <label for="f-direccion">Dirección</label>
+          <input type="text" id="f-direccion" name="direccion" required autocomplete="street-address">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-entrecalles">Entre qué calles</label>
+            <input type="text" id="f-entrecalles" name="entrecalles" required>
+          </div>
+          <div class="field">
+            <label for="f-timbre">Timbre (si aplica)</label>
+            <input type="text" id="f-timbre" name="timbre">
+          </div>
+        </div>
+      </fieldset>
+
+      <div id="delivery-summary" class="summary-list"></div>
+
+      <div class="whatsapp-cta">
+        <p>Revisá que esté todo correcto y confirmá tu pedido por WhatsApp:</p>
+        <button class="btn btn-primary btn-whatsapp btn-block" id="btn-whatsapp-confirm" type="submit">
+          <svg viewBox="0 0 32 32" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M16.04 3C9.37 3 3.98 8.39 3.98 15.06c0 2.24.61 4.33 1.67 6.13L3 29l7.99-2.6a11.99 11.99 0 0 0 5.05 1.1h.01c6.67 0 12.06-5.39 12.06-12.06C28.11 8.39 22.72 3 16.05 3h-.01zm7.02 17.24c-.3.83-1.72 1.6-2.38 1.69-.61.09-1.38.13-2.23-.14-.51-.16-1.17-.38-2.02-.75-3.56-1.54-5.88-5.14-6.06-5.38-.18-.24-1.45-1.93-1.45-3.68s.92-2.61 1.25-2.97c.32-.35.71-.44.95-.44.24 0 .48 0 .69.01.22.01.52-.08.81.62.3.72 1.02 2.49 1.11 2.67.09.18.15.39.03.63-.12.24-.18.39-.36.6-.18.21-.38.47-.54.63-.18.18-.37.37-.16.73.21.35.93 1.53 1.99 2.48 1.37 1.22 2.52 1.6 2.88 1.78.36.18.57.15.78-.09.21-.24.9-1.05 1.14-1.41.24-.35.48-.29.81-.18.33.12 2.09.99 2.45 1.17.36.18.6.27.69.42.09.15.09.85-.21 1.68z"/></svg>
+          Confirmar pedido por WhatsApp
+        </button>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline btn-block" id="btn-back-to-summary" type="button">&larr; Volver al resumen</button>
+      </div>
+      <div class="final-links">
+        <a href="#" id="btn-start-over">Empezar un pedido nuevo</a>
+      </div>
+    </form>
+  </section>
+
+</main>
+
+<!-- Sticky cart bar -->
+<div class="cart-bar" id="cart-bar">
+  <div class="cart-bar-info">
+    <strong id="cart-bar-count">0 platos</strong>
+    <span id="cart-bar-total">$0</span>
+  </div>
+  <button class="btn btn-primary" id="btn-view-summary" type="button">Ver resumen &rarr;</button>
+</div>
+</div>
+
+<script>
+  const WHATSAPP_NUMBER = '5491136530878';
+
+  const MENU = [
+    {
+      id: 'entradas', name: 'Entradas y Piqueos',
+      items: [
+        { id: 'causa-gusto', name: 'Causa Gusto', desc: 'Puré de papa rellena con tártar de camarones, langostinos apanados fritos y mayonesa de la casa.', price: 26500 },
+        { id: 'causa-camarones', name: 'Causa de Camarones', desc: 'Preparada con puré de papa, tártar de camarones y ají amarillo, clásico peruano.', price: 20500 },
+        { id: 'anticucho-huancaina', name: 'Anticucho & Huancaína', desc: 'La pareja perfecta: pinches de anticucho con papas a la huancaína.', price: 21500 },
+        { id: 'papas-huancaina', name: 'Papas a la Huancaína', desc: 'Papas bañadas en suave crema de queso y ají amarillo.', price: 19500 },
+        { id: 'tamales', name: 'Tamales', desc: 'Maíz molido condimentado con variedad de ajíes, rellenos de pollo o cerdo.', price: 14500 },
+        { id: 'piqueo-criollo', name: 'Piqueo Criollo', desc: 'Tamal con salsa criolla, causita, papa a la huancaína y anticuchos.', price: 43500 },
+        { id: 'anticuchos-langostinos', name: 'Anticuchos de Langostinos', desc: 'Brochetas grilladas a las brasas, adobadas en ajíes y crema de langosta, con papitas doradas.', price: 21500 },
+        { id: 'anticuchos-corazon', name: 'Anticuchos de Corazón', desc: 'Brochetas de corazón condimentadas con ajíes típicos, cocidas a las brasas, con papa dorada y salsa de rocoto.', price: 19500 }
+      ]
+    },
+    {
+      id: 'ensaladas', name: 'Ensaladas y Frituras',
+      items: [
+        { id: 'chicharron-pollo', name: 'Chicharrón de Pollo', desc: 'Medio pollo en trocitos, apanado y frito, con ensalada y papas fritas.', price: 30500 },
+        { id: 'chicharron-cerdo', name: 'Chicharrón de Cerdo', desc: 'Trozos de cerdo fritos acompañados con papas doradas y ensalada criolla.', price: 30500 },
+        { id: 'cuarto-pollo-frito', name: 'Cuarto de Pollo Frito', desc: 'Con fritas, ensalada y arroz.', price: 23500 },
+        { id: 'cuarto-pollo-broaster', name: 'Cuarto de Pollo Broaster (crocante)', desc: 'Crocante, con papas fritas, ensalada y arroz.', price: 23500 },
+        { id: 'salchipapas', name: 'Salchipapas', desc: 'Salchichas y papas fritas con ensalada y huevo.', price: 20500 },
+        { id: 'ensalada-gusto', name: 'Ensalada Gusto', desc: 'Tomate, lechuga, zanahoria, cebolla y huevo o palta.', price: 18500 },
+        { id: 'ensalada-simple', name: 'Ensalada Simple', desc: 'Lechuga, tomate y zanahoria.', price: 10500 },
+        { id: 'tequenos', name: 'Tequeños (6 u.)', desc: 'Bocaditos fritos rellenos de queso, con salsita especial de la casa.', price: 14500 },
+        { id: 'porcion-arroz', name: 'Porción de Arroz', desc: 'Guarnición para acompañar cualquier plato.', price: 10000 },
+        { id: 'porcion-papas', name: 'Porción de Papas Fritas', desc: 'Guarnición para acompañar cualquier plato.', price: 10500 }
+      ]
+    },
+    {
+      id: 'criollos', name: 'Platos Criollos',
+      items: [
+        { id: 'lomo-gusto', name: 'Lomo Gusto', desc: 'Clásico especial: lomo y pollo salteados con tomate, cebolla y salsa de soja, con fritas, arroz y huevo frito.', price: 31500 },
+        { id: 'lomo-salteado', name: 'Lomo Salteado', desc: 'Trocitos de lomo o pollo salteados al wok con cebolla y tomate, con arroz y papas fritas.', price: 26500 },
+        { id: 'chaufa-pollo-carne', name: 'Chaufa de Pollo o Carne', desc: 'Arroz salteado con verduras, huevo y salsa de soja.', price: 23500 },
+        { id: 'chaufa-mixto', name: 'Chaufa Mixto', desc: 'Salteado con pollo, carne, verduras y salsa de soja.', price: 26500 },
+        { id: 'chaufa-vegetariano', name: 'Chaufa Vegetariano', desc: 'Arroz salteado con verduras, huevo y salsa de soja.', price: 20500, veg: true },
+        { id: 'aji-gallina', name: 'Ají de Gallina', desc: 'Pechuga de gallina desmenuzada bañada en crema de ají amarillo, con papas, arroz blanco, huevo y aceituna.', price: 28500 },
+        { id: 'pollo-plancha', name: 'Pollo a la Plancha', desc: 'Pechuga de pollo a la plancha, con papa hervida y ensalada con huevo frito.', price: 23500 },
+        { id: 'tallarines-verdes-bistec', name: 'Tallarines Verdes con Bistec o Pollo', desc: 'Bañados en salsa verde a base de albahaca y espinaca, con salsita huancaína.', price: 29500 },
+        { id: 'tallarines-salteados', name: 'Tallarines Salteados de Pollo o Carne', desc: 'Salteados con cebolla, tomate y salsa de soja.', price: 23500 },
+        { id: 'tallarines-mixtos', name: 'Tallarines Mixtos', desc: 'Salteados con pollo, carne, verduras y salsa de soja.', price: 26500 },
+        { id: 'tallarines-vegetarianos', name: 'Tallarines Vegetarianos', desc: 'Salteados con verduras y salsa de soja.', price: 20500, veg: true },
+        { id: 'tallarines-verdes', name: 'Tallarines Verdes', desc: 'Bañados en salsa verde a base de albahaca y espinaca.', price: 20500, veg: true }
+      ]
+    },
+    {
+      id: 'ceviches', name: 'Ceviches',
+      items: [
+        { id: 'ceviche-pescado', name: 'Ceviche de Pescado', desc: 'Clásico peruano: filetes de pescado bañados en jugo de limón, con batata y cancha.', price: 24800 },
+        { id: 'ceviche-salmon', name: 'Ceviche de Salmón Rosado', desc: 'Clásico peruano, pero con más sabor.', price: 31500 },
+        { id: 'ceviche-mixto', name: 'Ceviche Mixto', desc: 'Mariscos y pescado bañados en jugo de limón, con batata, choclo y cancha.', price: 24500 },
+        { id: 'ceviche-nikkei', name: 'Ceviche Nikkei', desc: 'Fusión de cocina japonesa y peruana: salsa de soja, limón y semillas de sésamo.', price: 27500 },
+        { id: 'degustacion-ceviches', name: 'Degustación de Ceviches (Para 2)', desc: 'Buenazo... ceviche de pescado, ceviche mixtura con rabas fritas y ceviche Gusto.', price: 56500 },
+        { id: 'causa-acevichada-rabas', name: 'Causa Acevichada con Rabas', desc: 'Causita bañada con suave crema de rocoto, con ceviche de lenguado y rabas fritas.', price: 26500 },
+        { id: 'ceviche-gusto', name: 'Ceviche Gusto', desc: 'El especial de la casa, con camarones y pescado marinado en leche de tigre, con batata.', price: 27500 },
+        { id: 'ceviche-gusto-salmon', name: 'Ceviche Gusto con Salmón Rosado', desc: 'El especial de la casa, recargado.', price: 33500 },
+        { id: 'ceviche-mixtura', name: 'Ceviche Mixtura', desc: 'Mixtura de mariscos y pescados, acompañada de rabas.', price: 29500 },
+        { id: 'ceviche-afrodisiaco', name: 'Ceviche Afrodisiaco', desc: 'Frutos de mar condimentados con especies, vino blanco y limón.', price: 24500 },
+        { id: 'tiradito-criollo', name: 'Tiradito Criollo', desc: 'Pesca del día en salsa de ají amarillo.', price: 22000 },
+        { id: 'causa-acevichada-salmon', name: 'Causa Acevichada con Salmón Rosado', desc: 'Causita bañada con suave crema de rocoto, acompañada con ceviche de salmón rosado y rabas fritas.', price: 28500 }
+      ]
+    },
+    {
+      id: 'mariscos', name: 'Pescados y Mariscos',
+      items: [
+        { id: 'parrilla-mariscos', name: 'Parrilla de Mariscos (Para 2)', desc: 'Abundantes mariscos a la plancha, bañados en suave crema de langosta, con papas doradas.', price: 79500 },
+        { id: 'aji-camarones', name: 'Ají de Camarones', desc: 'Camarones dorados en manteca con crema de langostinos, con papas hervidas y arroz.', price: 28500 },
+        { id: 'tallarines-mariscos', name: 'Tallarines Salteados con Mariscos', desc: 'Con cebolla, morrón, manteca y salsa de ostión.', price: 28500 },
+        { id: 'orgia-mariscos', name: 'Orgía de Mariscos', desc: 'Exóticos frutos de mar condimentados con especias y ajíes, con papas naturales y arroz blanco.', price: 31500 },
+        { id: 'salmon-picante-mariscos', name: 'Salmón Rosado con Picante de Mariscos', desc: 'Bañado en suave crema de mariscos, con arroz y papas.', price: 46500 },
+        { id: 'salmon-plancha', name: 'Salmón Rosado a la Plancha', desc: 'Con verduras salteadas y crema de mariscos (opcional lenguado frito).', price: 30500 },
+        { id: 'mixtura-mariscos', name: 'Mixtura de Mariscos (Para 2)', desc: 'Degustación de causita, causa de langostinos, ceviche y arroz con mariscos.', price: 59500 },
+        { id: 'chaufa-mariscos', name: 'Chaufa de Mariscos', desc: 'Salteados al wok con arroz, verdeo, brotes, salsa de soja y gotas de sésamo.', price: 31500 },
+        { id: 'jalea-mixta', name: 'Jalea Mixta (Para 2)', desc: 'Pescados y mariscos apanados y fritos, con criolla, papitas y tártara.', price: 46500 },
+        { id: 'mero-macho', name: 'Mero a lo Macho', desc: 'Filete de pescado bañado en salsa cremosa de mariscos y ajíes, con arroz y papas.', price: 36500 },
+        { id: 'causa-orgia-mariscos', name: 'Causa con Orgía de Mariscos', desc: 'Causita de langostinos bañada con mixtura de mariscos.', price: 31500 },
+        { id: 'arroz-mariscos', name: 'Arroz con Mariscos', desc: 'A base de arroz con mixtura de mariscos, aderezado con ajíes y vino blanco.', price: 36500 }
+      ]
+    },
+    {
+      id: 'sopas', name: 'Sopas',
+      items: [
+        { id: 'sopa-criolla', name: 'Sopa Criolla', desc: 'Sopa casera a base de carne de res y fideos.', price: 22500 },
+        { id: 'parihuela', name: 'Parihuela', desc: 'Sopa de pescado y mariscos, energizante y tonificante, típica de la costa.', price: 28500 },
+        { id: 'sudado-pescado', name: 'Sudado de Pescado', desc: 'Pescado al vapor cocido en su jugo, con tomates, cebollas y ajíes, con papas y arroz.', price: 26500 },
+        { id: 'sopa-minuta', name: 'Sopa a la Minuta', desc: 'A base de carne o pollo, con leche y huevo.', price: 22500 },
+        { id: 'chupe-camarones', name: 'Chupe de Camarones', desc: 'Sopa típica peruana a base de camarones, queso, leche, huacatay y huevo.', price: 30500 },
+        { id: 'chupe-pescado', name: 'Chupe de Pescado', desc: 'Sopa peruana a base de pescado, queso, leche, huacatay y huevo.', price: 26500 }
+      ]
+    },
+    {
+      id: 'postres', name: 'Postres',
+      items: [
+        { id: 'torta-tres-leches', name: 'Torta Tres Leches', desc: 'Clásico postre peruano, húmedo y suave.', price: 12500 },
+        { id: 'mousse-maracuya', name: 'Mousse de Maracuyá', desc: 'Cremoso y refrescante.', price: 10500 },
+        { id: 'mousse-pisco-sour', name: 'Mousse de Pisco Sour', desc: 'El clásico trago peruano, en versión postre.', price: 10500 },
+        { id: 'suspiro-limeno', name: 'Suspiro Limeño', desc: 'Manjar blanco y merengue al oporto.', price: 12500 }
+      ]
+    },
+    {
+      id: 'bebidas', name: 'Bebidas',
+      items: [
+        { id: 'agua-gaseosa', name: 'Agua o Gaseosa', desc: 'Botella individual.', price: 5500 }
+      ]
+    }
+  ];
+
+  const ITEM_MAP = {};
+  MENU.forEach(cat => cat.items.forEach(it => { ITEM_MAP[it.id] = it; }));
+
+  const DELIVERY_COSTS = { near: 0, mid: 4000, far: 5000 };
+  const DELIVERY_LABELS = {
+    near: 'Menos de 2.5 km (25 cuadras)',
+    mid: '2.6 km – 5 km',
+    far: '5 km – 6 km'
+  };
+
+  const state = {
+    cart: {},
+    specialInstructions: '',
+    distance: null,
+    customer: { nombre: '', telefono: '', direccion: '', entrecalles: '', timbre: '' }
+  };
+
+  const STEP_ORDER = ['menu', 'summary', 'delivery'];
+
+  // Calling codes: AR, ISO2, dial code and expected national-number digit length [min, max].
+  // Argentina first (default); rest sorted alphabetically. Source: ITU-T E.164 country codes.
+  const COUNTRIES = [
+    { name: 'Argentina', iso2: 'AR', dial: '54', len: [10, 11] },
+    { name: 'Alemania', iso2: 'DE', dial: '49', len: [10, 11] },
+    { name: 'Andorra', iso2: 'AD', dial: '376', len: [6, 6] },
+    { name: 'Antigua y Barbuda', iso2: 'AG', dial: '1', len: [10, 10] },
+    { name: 'Arabia Saudita', iso2: 'SA', dial: '966', len: [9, 9] },
+    { name: 'Australia', iso2: 'AU', dial: '61', len: [9, 9] },
+    { name: 'Austria', iso2: 'AT', dial: '43', len: [10, 11] },
+    { name: 'Bahamas', iso2: 'BS', dial: '1', len: [10, 10] },
+    { name: 'Barbados', iso2: 'BB', dial: '1', len: [10, 10] },
+    { name: 'Bélgica', iso2: 'BE', dial: '32', len: [8, 9] },
+    { name: 'Belice', iso2: 'BZ', dial: '501', len: [7, 7] },
+    { name: 'Bielorrusia', iso2: 'BY', dial: '375', len: [9, 9] },
+    { name: 'Bolivia', iso2: 'BO', dial: '591', len: [8, 8] },
+    { name: 'Bosnia y Herzegovina', iso2: 'BA', dial: '387', len: [8, 8] },
+    { name: 'Brasil', iso2: 'BR', dial: '55', len: [10, 11] },
+    { name: 'Bulgaria', iso2: 'BG', dial: '359', len: [8, 9] },
+    { name: 'Canadá', iso2: 'CA', dial: '1', len: [10, 10] },
+    { name: 'Chile', iso2: 'CL', dial: '56', len: [9, 9] },
+    { name: 'China', iso2: 'CN', dial: '86', len: [11, 11] },
+    { name: 'Chipre', iso2: 'CY', dial: '357', len: [8, 8] },
+    { name: 'Colombia', iso2: 'CO', dial: '57', len: [10, 10] },
+    { name: 'Corea del Sur', iso2: 'KR', dial: '82', len: [9, 10] },
+    { name: 'Costa Rica', iso2: 'CR', dial: '506', len: [8, 8] },
+    { name: 'Croacia', iso2: 'HR', dial: '385', len: [8, 9] },
+    { name: 'Cuba', iso2: 'CU', dial: '53', len: [8, 8] },
+    { name: 'Dinamarca', iso2: 'DK', dial: '45', len: [8, 8] },
+    { name: 'Dominica', iso2: 'DM', dial: '1', len: [10, 10] },
+    { name: 'Ecuador', iso2: 'EC', dial: '593', len: [9, 9] },
+    { name: 'Egipto', iso2: 'EG', dial: '20', len: [10, 10] },
+    { name: 'El Salvador', iso2: 'SV', dial: '503', len: [8, 8] },
+    { name: 'Emiratos Árabes Unidos', iso2: 'AE', dial: '971', len: [9, 9] },
+    { name: 'Eslovaquia', iso2: 'SK', dial: '421', len: [9, 9] },
+    { name: 'Eslovenia', iso2: 'SI', dial: '386', len: [8, 8] },
+    { name: 'España', iso2: 'ES', dial: '34', len: [9, 9] },
+    { name: 'Estados Unidos', iso2: 'US', dial: '1', len: [10, 10] },
+    { name: 'Estonia', iso2: 'EE', dial: '372', len: [7, 8] },
+    { name: 'Filipinas', iso2: 'PH', dial: '63', len: [10, 10] },
+    { name: 'Finlandia', iso2: 'FI', dial: '358', len: [9, 10] },
+    { name: 'Francia', iso2: 'FR', dial: '33', len: [9, 9] },
+    { name: 'Granada', iso2: 'GD', dial: '1', len: [10, 10] },
+    { name: 'Grecia', iso2: 'GR', dial: '30', len: [10, 10] },
+    { name: 'Guatemala', iso2: 'GT', dial: '502', len: [8, 8] },
+    { name: 'Guyana', iso2: 'GY', dial: '592', len: [7, 7] },
+    { name: 'Haití', iso2: 'HT', dial: '509', len: [8, 8] },
+    { name: 'Honduras', iso2: 'HN', dial: '504', len: [8, 8] },
+    { name: 'Hungría', iso2: 'HU', dial: '36', len: [9, 9] },
+    { name: 'India', iso2: 'IN', dial: '91', len: [10, 10] },
+    { name: 'Indonesia', iso2: 'ID', dial: '62', len: [9, 11] },
+    { name: 'Irlanda', iso2: 'IE', dial: '353', len: [9, 9] },
+    { name: 'Islandia', iso2: 'IS', dial: '354', len: [7, 7] },
+    { name: 'Israel', iso2: 'IL', dial: '972', len: [9, 9] },
+    { name: 'Italia', iso2: 'IT', dial: '39', len: [9, 10] },
+    { name: 'Jamaica', iso2: 'JM', dial: '1', len: [10, 10] },
+    { name: 'Japón', iso2: 'JP', dial: '81', len: [10, 10] },
+    { name: 'Letonia', iso2: 'LV', dial: '371', len: [8, 8] },
+    { name: 'Liechtenstein', iso2: 'LI', dial: '423', len: [7, 7] },
+    { name: 'Lituania', iso2: 'LT', dial: '370', len: [8, 8] },
+    { name: 'Luxemburgo', iso2: 'LU', dial: '352', len: [6, 9] },
+    { name: 'Malasia', iso2: 'MY', dial: '60', len: [9, 10] },
+    { name: 'Malta', iso2: 'MT', dial: '356', len: [8, 8] },
+    { name: 'Marruecos', iso2: 'MA', dial: '212', len: [9, 9] },
+    { name: 'México', iso2: 'MX', dial: '52', len: [10, 10] },
+    { name: 'Moldavia', iso2: 'MD', dial: '373', len: [8, 8] },
+    { name: 'Mónaco', iso2: 'MC', dial: '377', len: [8, 9] },
+    { name: 'Montenegro', iso2: 'ME', dial: '382', len: [8, 8] },
+    { name: 'Nicaragua', iso2: 'NI', dial: '505', len: [8, 8] },
+    { name: 'Nigeria', iso2: 'NG', dial: '234', len: [10, 10] },
+    { name: 'Noruega', iso2: 'NO', dial: '47', len: [8, 8] },
+    { name: 'Nueva Zelanda', iso2: 'NZ', dial: '64', len: [8, 9] },
+    { name: 'Países Bajos', iso2: 'NL', dial: '31', len: [9, 9] },
+    { name: 'Panamá', iso2: 'PA', dial: '507', len: [7, 8] },
+    { name: 'Paraguay', iso2: 'PY', dial: '595', len: [8, 9] },
+    { name: 'Perú', iso2: 'PE', dial: '51', len: [9, 9] },
+    { name: 'Polonia', iso2: 'PL', dial: '48', len: [9, 9] },
+    { name: 'Portugal', iso2: 'PT', dial: '351', len: [9, 9] },
+    { name: 'Reino Unido', iso2: 'GB', dial: '44', len: [10, 10] },
+    { name: 'República Checa', iso2: 'CZ', dial: '420', len: [9, 9] },
+    { name: 'República Dominicana', iso2: 'DO', dial: '1', len: [10, 10] },
+    { name: 'Rumania', iso2: 'RO', dial: '40', len: [9, 9] },
+    { name: 'Rusia', iso2: 'RU', dial: '7', len: [10, 10] },
+    { name: 'San Cristóbal y Nieves', iso2: 'KN', dial: '1', len: [10, 10] },
+    { name: 'San Marino', iso2: 'SM', dial: '378', len: [10, 10] },
+    { name: 'San Vicente y las Granadinas', iso2: 'VC', dial: '1', len: [10, 10] },
+    { name: 'Santa Lucía', iso2: 'LC', dial: '1', len: [10, 10] },
+    { name: 'Serbia', iso2: 'RS', dial: '381', len: [8, 9] },
+    { name: 'Singapur', iso2: 'SG', dial: '65', len: [8, 8] },
+    { name: 'Sudáfrica', iso2: 'ZA', dial: '27', len: [9, 9] },
+    { name: 'Suecia', iso2: 'SE', dial: '46', len: [7, 9] },
+    { name: 'Suiza', iso2: 'CH', dial: '41', len: [9, 9] },
+    { name: 'Surinam', iso2: 'SR', dial: '597', len: [6, 7] },
+    { name: 'Tailandia', iso2: 'TH', dial: '66', len: [9, 9] },
+    { name: 'Trinidad y Tobago', iso2: 'TT', dial: '1', len: [10, 10] },
+    { name: 'Turquía', iso2: 'TR', dial: '90', len: [10, 10] },
+    { name: 'Ucrania', iso2: 'UA', dial: '380', len: [9, 9] },
+    { name: 'Uruguay', iso2: 'UY', dial: '598', len: [8, 9] },
+    { name: 'Venezuela', iso2: 'VE', dial: '58', len: [10, 10] },
+    { name: 'Vietnam', iso2: 'VN', dial: '84', len: [9, 10] }
+  ];
+
+  function flagEmoji(iso2) {
+    return String.fromCodePoint(...[...iso2.toUpperCase()].map(c => 127397 + c.charCodeAt(0)));
+  }
+
+  function formatPrice(n) { return '$' + n.toLocaleString('es-AR'); }
+  function qty(id) { return state.cart[id] || 0; }
+  function cartCount() { return Object.values(state.cart).reduce((a, b) => a + b, 0); }
+  function cartTotal() { return Object.entries(state.cart).reduce((sum, [id, q]) => sum + ITEM_MAP[id].price * q, 0); }
+  function deliveryCost() { return state.distance ? DELIVERY_COSTS[state.distance] : 0; }
+  function grandTotal() { return cartTotal() + deliveryCost(); }
+
+  // ---------- Build menu DOM ----------
+  const menuContainer = document.getElementById('menu-container');
+  const catNav = document.getElementById('cat-nav');
+
+  MENU.forEach(cat => {
+    const navBtn = document.createElement('button');
+    navBtn.type = 'button';
+    navBtn.textContent = cat.name;
+    navBtn.addEventListener('click', () => {
+      document.getElementById('cat-' + cat.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    catNav.appendChild(navBtn);
+
+    const section = document.createElement('div');
+    section.className = 'menu-category';
+    section.id = 'cat-' + cat.id;
+    section.innerHTML = `<h3>${cat.name}</h3>`;
+
+    cat.items.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'menu-item';
+      row.innerHTML = `
+        <div class="menu-item-info">
+          <h4>${item.name}${item.veg ? '<span class="veg-tag">Vegetariano</span>' : ''}</h4>
+          <p>${item.desc}</p>
+        </div>
+        <div class="menu-item-controls">
+          <span class="menu-item-price">${formatPrice(item.price)}</span>
+          <div class="qty-stepper">
+            <button class="qty-btn minus" type="button" data-id="${item.id}" data-delta="-1" disabled aria-label="Restar ${item.name}">−</button>
+            <span class="qty-value" data-qty-for="${item.id}">0</span>
+            <button class="qty-btn plus" type="button" data-id="${item.id}" data-delta="1" aria-label="Sumar ${item.name}">+</button>
+          </div>
+        </div>
+      `;
+      section.appendChild(row);
+    });
+
+    menuContainer.appendChild(section);
+  });
+
+  menuContainer.addEventListener('click', (e) => {
+    const btn = e.target.closest('.qty-btn');
+    if (!btn || btn.disabled) return;
+    const id = btn.dataset.id;
+    const delta = parseInt(btn.dataset.delta, 10);
+    const newQty = Math.max(0, qty(id) + delta);
+    if (newQty === 0) delete state.cart[id]; else state.cart[id] = newQty;
+    updateItemRow(id);
+    updateCartBar();
+  });
+
+  function updateItemRow(id) {
+    const q = qty(id);
+    menuContainer.querySelector(`.qty-value[data-qty-for="${id}"]`).textContent = q;
+    menuContainer.querySelector(`.qty-btn.minus[data-id="${id}"]`).disabled = q === 0;
+  }
+
+  function updateCartBar() {
+    const count = cartCount();
+    const bar = document.getElementById('cart-bar');
+    document.getElementById('cart-bar-count').textContent = count + (count === 1 ? ' plato' : ' platos');
+    document.getElementById('cart-bar-total').textContent = formatPrice(cartTotal());
+    const menuActive = document.getElementById('step-menu').classList.contains('active');
+    bar.classList.toggle('visible', count > 0 && menuActive);
+  }
+
+  document.getElementById('special-instructions').addEventListener('input', (e) => {
+    state.specialInstructions = e.target.value;
+  });
+
+  // ---------- Step navigation ----------
+  function goToStep(name) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + name).classList.add('active');
+
+    const current = STEP_ORDER.indexOf(name);
+    document.querySelectorAll('#stepper .step-dot').forEach(dot => {
+      const idx = STEP_ORDER.indexOf(dot.dataset.step);
+      dot.classList.toggle('active', dot.dataset.step === name);
+      dot.classList.toggle('done', idx < current);
+    });
+
+    updateCartBar();
+    if (name === 'summary') renderSummary();
+    if (name === 'delivery') renderDeliverySummary();
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.getElementById('btn-view-summary').addEventListener('click', () => goToStep('summary'));
+  document.getElementById('btn-back-to-menu').addEventListener('click', () => goToStep('menu'));
+  document.getElementById('btn-confirm-order').addEventListener('click', () => goToStep('delivery'));
+  document.getElementById('btn-back-to-summary').addEventListener('click', () => goToStep('summary'));
+
+  document.getElementById('btn-start-over').addEventListener('click', (e) => {
+    e.preventDefault();
+    state.cart = {};
+    state.specialInstructions = '';
+    state.distance = null;
+    state.customer = { nombre: '', telefono: '', direccion: '', entrecalles: '', timbre: '' };
+    document.querySelectorAll('#menu-container .qty-value').forEach(el => el.textContent = '0');
+    document.querySelectorAll('#menu-container .qty-btn.minus').forEach(el => el.disabled = true);
+    document.getElementById('special-instructions').value = '';
+    document.getElementById('delivery-form').reset();
+    selectCountry(COUNTRIES[0]);
+    goToStep('menu');
+  });
+
+  // ---------- Summary ----------
+  function renderSummary() {
+    const container = document.getElementById('summary-list');
+    const entries = Object.entries(state.cart);
+    if (entries.length === 0) {
+      container.innerHTML = '<p class="empty-note">Todavía no elegiste ningún plato.</p>';
+      document.getElementById('btn-confirm-order').disabled = true;
+      return;
+    }
+    document.getElementById('btn-confirm-order').disabled = false;
+
+    let html = '';
+    entries.forEach(([id, q]) => {
+      const item = ITEM_MAP[id];
+      html += `
+        <div class="summary-row">
+          <span class="name">${item.name} <span class="sub">x${q}</span></span>
+          <span>${formatPrice(item.price * q)}</span>
+        </div>`;
+    });
+    if (state.specialInstructions.trim()) {
+      html += `<div class="summary-row"><span class="name">Indicaciones</span><span class="sub">${escapeHtml(state.specialInstructions.trim())}</span></div>`;
+    }
+    html += `<div class="summary-total-row"><span>Total</span><span>${formatPrice(cartTotal())}</span></div>`;
+    container.innerHTML = html;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ---------- Delivery + payment step ----------
+  const deliveryForm = document.getElementById('delivery-form');
+
+  deliveryForm.querySelectorAll('input[name="distance"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      state.distance = radio.value;
+      renderDeliverySummary();
+    });
+  });
+
+  ['nombre', 'direccion', 'entrecalles', 'timbre'].forEach(field => {
+    document.getElementById('f-' + field).addEventListener('input', (e) => {
+      state.customer[field] = e.target.value;
+    });
+  });
+
+  // ---------- Phone field: country picker + digits-only + per-country validation ----------
+  const phoneInput = document.getElementById('f-telefono');
+  const countrySelectBtn = document.getElementById('country-select-btn');
+  const countryDropdown = document.getElementById('country-dropdown');
+  const countrySearch = document.getElementById('country-search');
+  const countryListEl = document.getElementById('country-list');
+  let selectedCountry = COUNTRIES[0];
+
+  function lengthLabel(country) {
+    const [min, max] = country.len;
+    return min === max ? `${min} dígitos` : `${min}–${max} dígitos`;
+  }
+
+  function buildCountryList(filter) {
+    countryListEl.innerHTML = '';
+    const f = (filter || '').trim().toLowerCase();
+    const matches = COUNTRIES.filter(c => !f || c.name.toLowerCase().includes(f) || c.dial.includes(f));
+    if (matches.length === 0) {
+      countryListEl.innerHTML = '<li class="no-results">Sin resultados</li>';
+      return;
+    }
+    matches.forEach(c => {
+      const li = document.createElement('li');
+      li.setAttribute('role', 'option');
+      li.innerHTML = `<span class="flag">${flagEmoji(c.iso2)}</span><span class="cname">${c.name}</span><span class="dial">+${c.dial}</span>`;
+      li.addEventListener('click', () => selectCountry(c));
+      countryListEl.appendChild(li);
+    });
+  }
+
+  function selectCountry(country) {
+    selectedCountry = country;
+    document.getElementById('country-flag').textContent = flagEmoji(country.iso2);
+    document.getElementById('country-dial').textContent = '+' + country.dial;
+    closeCountryDropdown();
+    updatePhoneConstraints();
+  }
+
+  function openCountryDropdown() {
+    countryDropdown.classList.add('open');
+    countrySelectBtn.setAttribute('aria-expanded', 'true');
+    countrySearch.value = '';
+    buildCountryList('');
+    countrySearch.focus();
+  }
+
+  function closeCountryDropdown() {
+    countryDropdown.classList.remove('open');
+    countrySelectBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  countrySelectBtn.addEventListener('click', () => {
+    if (countryDropdown.classList.contains('open')) closeCountryDropdown();
+    else openCountryDropdown();
+  });
+
+  countrySearch.addEventListener('input', (e) => buildCountryList(e.target.value));
+  countrySearch.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCountryDropdown(); });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.phone-field')) closeCountryDropdown();
+  });
+
+  function updatePhoneConstraints() {
+    const [, max] = selectedCountry.len;
+    phoneInput.maxLength = max;
+    if (phoneInput.value.length > max) phoneInput.value = phoneInput.value.slice(0, max);
+    document.getElementById('phone-hint').textContent =
+      `Ingresá tu número sin el 0 ni el 15 (${lengthLabel(selectedCountry)} para ${selectedCountry.name}).`;
+    validatePhone();
+  }
+
+  function validatePhone() {
+    const digits = phoneInput.value.replace(/\D/g, '');
+    const [min, max] = selectedCountry.len;
+    if (digits.length === 0) {
+      phoneInput.setCustomValidity('');
+    } else if (digits.length < min || digits.length > max) {
+      phoneInput.setCustomValidity(`Ese número no parece válido para ${selectedCountry.name} (${lengthLabel(selectedCountry)}).`);
+    } else {
+      phoneInput.setCustomValidity('');
+    }
+  }
+
+  phoneInput.addEventListener('input', () => {
+    const digits = phoneInput.value.replace(/\D/g, '').slice(0, selectedCountry.len[1]);
+    phoneInput.value = digits;
+    validatePhone();
+    state.customer.telefono = digits ? `+${selectedCountry.dial} ${digits}` : '';
+  });
+
+  selectCountry(COUNTRIES[0]);
+
+  function renderDeliverySummary() {
+    const container = document.getElementById('delivery-summary');
+    let html = '';
+    Object.entries(state.cart).forEach(([id, q]) => {
+      const item = ITEM_MAP[id];
+      html += `<div class="summary-row"><span class="name">${item.name} <span class="sub">x${q}</span></span><span>${formatPrice(item.price * q)}</span></div>`;
+    });
+    if (state.specialInstructions.trim()) {
+      html += `<div class="summary-row"><span class="name">Indicaciones</span><span class="sub">${escapeHtml(state.specialInstructions.trim())}</span></div>`;
+    }
+    html += `<div class="summary-row"><span class="name">Subtotal</span><span>${formatPrice(cartTotal())}</span></div>`;
+    const envioLabel = state.distance ? (state.distance === 'near' ? 'GRATIS' : formatPrice(deliveryCost())) : 'Elegí la distancia';
+    html += `<div class="summary-row"><span class="name">Envío ${state.distance ? '(' + DELIVERY_LABELS[state.distance] + ')' : ''}</span><span>${envioLabel}</span></div>`;
+    html += `<div class="summary-total-row"><span>Total</span><span>${formatPrice(grandTotal())}</span></div>`;
+    container.innerHTML = html;
+  }
+
+  // ---------- Submit: build WhatsApp link and go ----------
+  deliveryForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!deliveryForm.reportValidity()) return;
+    const waLink = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(buildWhatsAppMessage());
+    window.open(waLink, '_blank', 'noopener');
+    if (window.dataLayer) {
+      window.dataLayer.push({ event: 'whatsapp_pedido_confirmado' });
+    }
+  });
+
+  function buildWhatsAppMessage() {
+    const lines = [];
+    lines.push('¡Hola! Quiero hacer este pedido para delivery:');
+    lines.push('');
+    Object.entries(state.cart).forEach(([id, q]) => {
+      const item = ITEM_MAP[id];
+      lines.push(`• ${item.name} x${q} — ${formatPrice(item.price * q)}`);
+    });
+    lines.push('');
+    if (state.specialInstructions.trim()) {
+      lines.push(`Indicaciones: ${state.specialInstructions.trim()}`);
+      lines.push('');
+    }
+    lines.push(`Subtotal: ${formatPrice(cartTotal())}`);
+    lines.push(`Envío (${DELIVERY_LABELS[state.distance] || '—'}): ${state.distance === 'near' ? 'GRATIS' : formatPrice(deliveryCost())}`);
+    lines.push(`Total: ${formatPrice(grandTotal())}`);
+    lines.push('');
+    lines.push(`Nombre: ${state.customer.nombre}`);
+    if (state.customer.telefono) lines.push(`Teléfono: ${state.customer.telefono}`);
+    lines.push(`Dirección: ${state.customer.direccion}`);
+    lines.push(`Entre calles: ${state.customer.entrecalles}`);
+    if (state.customer.timbre.trim()) lines.push(`Timbre: ${state.customer.timbre.trim()}`);
+    return lines.join('\n');
+  }
+
+  goToStep('menu');
+</script>
